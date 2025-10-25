@@ -10,12 +10,12 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class SetIntake extends CommandBase {
     private final Intake intake;
     private final Intake.MotorState motorState;
-    private final Telemetry telemetry;
+//    private final Telemetry telemetry;
 
-    public SetIntake(Intake intake, Intake.MotorState motorState, Telemetry telemetry) {
+    public SetIntake(Intake intake, Intake.MotorState motorState) {
         this.intake = intake;
         this.motorState = motorState;
-        this.telemetry = telemetry;
+//        this.telemetry = telemetry;
 
         ElapsedTime timer;
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
+import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
@@ -35,8 +36,9 @@ public class MainTeleOp extends CommandOpMode {
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 //        if (gamepad1.right_bumper) {
-        schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD, telemetry));
-        schedule(new VisionCommand(robot.vision, telemetry));
+        schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
+        schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD));
+        schedule(new VisionCommand(robot.vision));
 
 
 //        }
@@ -46,7 +48,7 @@ public class MainTeleOp extends CommandOpMode {
     public void run() {
         super.run();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
-        robot.mdrive.mecanumDrive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+//        robot.mdrive.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
