@@ -17,8 +17,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.SubSystems.MecanumDriveBasic;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
+
 import com.pedropathing.follower.Follower;
 
 import com.pedropathing.follower.FollowerConstants;
@@ -57,10 +59,13 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //    public IMU imu;
 
     public MecanumDrive mecanumDrive;
+    public MecanumDriveBasic mdrive;
+
     public Intake intake;
     public Shooter shooter;
     public SensorColor colorSensor;
     public Vision vision;
+
 
 
     public void init(HardwareMap hardwareMap) throws InterruptedException {
@@ -108,6 +113,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         //Instantiate Subsystems
         mecanumDrive = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
+
+        mdrive = new MecanumDriveBasic(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake = new Intake();
         shooter = new Shooter();
         vision = new Vision(webCam1);

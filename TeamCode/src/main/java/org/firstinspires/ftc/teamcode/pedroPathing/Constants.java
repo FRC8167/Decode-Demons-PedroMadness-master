@@ -30,6 +30,7 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
+            .xVelocity(61.69886743740773)
             .rightFrontMotorName("RightFront")  //TODO check these names                                             c
             .rightRearMotorName("RightRear")
             .leftRearMotorName("LeftRear")

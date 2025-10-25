@@ -46,6 +46,7 @@ public class MainTeleOp extends CommandOpMode {
     public void run() {
         super.run();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
+        robot.mdrive.mecanumDrive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
