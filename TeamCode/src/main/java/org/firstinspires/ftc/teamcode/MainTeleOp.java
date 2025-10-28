@@ -60,6 +60,8 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         telemetry.addData("Intake State", robot.intake.motorState);
+        telemetry.addData("Pose X",robot.pinpoint.getEncoderX());
+        telemetry.addData("Pose Y",robot.pinpoint.getEncoderY());
         telemetry.update();
     }
 //TODO Make a new command for this and move this logic there

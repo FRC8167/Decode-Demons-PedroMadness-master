@@ -30,8 +30,8 @@ import java.util.ArrayList;
 public class AutoDMWTester extends CommandOpMode {
     Robot robot = Robot.getInstance();
     private ElapsedTime timer;
-    private final Pose startPose = new Pose(24, 24, Math.toRadians(180));
-    private final Pose shootClosePose = new Pose(60, 85, Math.toRadians(135));
+    private final Pose startPose = new Pose(24, 24, Math.toRadians(90));
+    private final Pose shootClosePose = new Pose(48, 48, Math.toRadians(90));
     private PathChain doSomething, doSomethingElse;
 
     public void buildPaths() {
@@ -49,8 +49,8 @@ public class AutoDMWTester extends CommandOpMode {
                 .build();
 
         doSomethingElse = robot.follower.pathBuilder()
-                .addPath(new BezierCurve(shootClosePose, new Pose(80, 110), new Pose(120, 80)))
-                .setLinearHeadingInterpolation(shootClosePose.getHeading(), Math.toRadians(180))
+                .addPath(new BezierCurve(shootClosePose, new Pose(96,96, Math.toRadians(90)), new Pose(120, 48, Math.toRadians(90))))
+                .setLinearHeadingInterpolation(shootClosePose.getHeading(), Math.toRadians(90))
                 .build();
 
     }
