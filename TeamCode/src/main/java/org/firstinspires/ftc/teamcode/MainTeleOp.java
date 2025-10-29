@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
@@ -19,6 +20,8 @@ public class MainTeleOp extends CommandOpMode {
     public GamepadEx operator;
     public ElapsedTime timer;
     private final Robot robot = Robot.getInstance();
+
+    private Pose autoEndPose = new Pose(0, 0, 0);
 
     @Override
     public void initialize() {
@@ -47,8 +50,11 @@ public class MainTeleOp extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
-//        robot.mdrive.mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
+        autoEndPose = robot.follower.getPose();
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
@@ -60,8 +66,8 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         telemetry.addData("Intake State", robot.intake.motorState);
-        telemetry.addData("Pose X",robot.pinpoint.getEncoderX());
-        telemetry.addData("Pose Y",robot.pinpoint.getEncoderY());
+        telemetry.addData("autoEndPose", autoEndPose.toString());
+        telemetry.addData("Follower", robot.follower.getPose());
         telemetry.update();
     }
 //TODO Make a new command for this and move this logic there
@@ -73,6 +79,23 @@ public class MainTeleOp extends CommandOpMode {
 //                    telemetry.addData("Shooter Target (tps)", shooter.getLaunchVelocity(vision.getDistanceToGoal()));
 //                }
 
+
+
+    @Override
+    public void end() {
+        autoEndPose = robot.follower.getPose();
+    }
+
+    public Pose getAutoEndPose() {
+        return autoEndPose;
         }
+
+
+    }
+
+
+
+
+
 
 
