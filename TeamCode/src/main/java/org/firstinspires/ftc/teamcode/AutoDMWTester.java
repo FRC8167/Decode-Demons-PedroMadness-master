@@ -53,6 +53,11 @@ public class AutoDMWTester extends CommandOpMode {
                 .setLinearHeadingInterpolation(shootClosePose.getHeading(), Math.toRadians(90))
                 .build();
 
+        doSomethingElse = robot.follower.pathBuilder()
+                .addPath(new BezierCurve(shootClosePose, new Pose(96,96, Math.toRadians(90)), new Pose(120, 48, Math.toRadians(90))))
+                .setLinearHeadingInterpolation(shootClosePose.getHeading(), Math.toRadians(90))
+                .build();
+
     }
 
     public void initialize() {

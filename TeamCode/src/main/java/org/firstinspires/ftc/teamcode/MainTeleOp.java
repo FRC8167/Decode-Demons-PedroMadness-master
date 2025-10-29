@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 //@Disabled
@@ -21,7 +22,9 @@ public class MainTeleOp extends CommandOpMode {
     public ElapsedTime timer;
     private final Robot robot = Robot.getInstance();
 
+    private final Pose startPose = new Pose(24, 24, Math.toRadians(90)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
+
 
     @Override
     public void initialize() {
@@ -38,6 +41,9 @@ public class MainTeleOp extends CommandOpMode {
 
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
+
+        robot.follower = Constants.createFollower(hardwareMap);
+        robot.follower.setStartingPose(startPose);
 //        if (gamepad1.right_bumper) {
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD));
@@ -50,11 +56,10 @@ public class MainTeleOp extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        robot.follower.update();
         autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
-
-        autoEndPose = robot.follower.getPose();
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
@@ -67,7 +72,10 @@ public class MainTeleOp extends CommandOpMode {
 
         telemetry.addData("Intake State", robot.intake.motorState);
         telemetry.addData("autoEndPose", autoEndPose.toString());
-        telemetry.addData("Follower", robot.follower.getPose());
+        telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX()*100)/100.0);
+        telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY()*100)/100.0);
+        telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading())*100)/100.0);
+
         telemetry.update();
     }
 //TODO Make a new command for this and move this logic there
