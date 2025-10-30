@@ -13,9 +13,9 @@ public class Intake extends SubsystemBase{
         PASSIVE
     }
 
-    public static double INTAKE_FORWARD_SPEED = 1.0;
+    public static double INTAKE_FORWARD_SPEED = 50.0;
     public static double INTAKE_REVERSE_SPEED = 0.0; // unused
-    public static double INTAKE_PASSIVE_SPEED = 0.5;
+    public static double INTAKE_PASSIVE_SPEED = 20;
     public MotorState motorState = MotorState.STOP;
 
     public void init() {
@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase{
         this.motorState = motorState;
     }
 
-    private void setIntake(MotorState motorState) {
+    public void setIntakeState() {
        switch (motorState) {
                 case FORWARD:
                     robot.intakeMotor.set(INTAKE_FORWARD_SPEED);
@@ -45,14 +45,16 @@ public class Intake extends SubsystemBase{
 
     public void toggleIntake() {
             if (motorState.equals(MotorState.FORWARD)) {
-                setIntake(MotorState.REVERSE);
+                setMotorState(MotorState.REVERSE);
+                setIntakeState();
             } else if (motorState.equals(MotorState.REVERSE)) {
-                setIntake(MotorState.FORWARD);
+                setMotorState(MotorState.FORWARD);
+                setIntakeState();
             }
         }
 
     public void periodic() {
-        setIntake(motorState);
+        setIntakeState();
 //        robot.telemetry.addData("Intake State", motorState);
 //        robot.telemetry.update();
 

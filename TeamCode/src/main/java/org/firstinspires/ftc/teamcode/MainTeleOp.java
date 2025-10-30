@@ -4,7 +4,11 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.button.Button;
+import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
@@ -39,15 +43,25 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
+
+
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
+//
+//        Button intakeON = new GamepadButton(
+//                driver, GamepadKeys.Button.A
+//        );
+//        driver.getGamepadButton(GamepadKeys.Button.A);
+
 
         robot.follower = Constants.createFollower(hardwareMap);
         robot.follower.setStartingPose(startPose);
 //        if (gamepad1.right_bumper) {
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
-        schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD));
+//        schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD));
         schedule(new VisionCommand(robot.vision));
+
+
 
 
 //        }
@@ -59,6 +73,10 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
         autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
+
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+                new InstantCommand(() -> new SetIntake(robot.intake, Intake.MotorState.FORWARD))
+        );
 
 
         if (tag != null) {
