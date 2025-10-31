@@ -11,6 +11,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleIntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
@@ -47,11 +48,16 @@ public class MainTeleOp extends CommandOpMode {
 
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
-//
-//        Button intakeON = new GamepadButton(
-//                driver, GamepadKeys.Button.A
-//        );
-//        driver.getGamepadButton(GamepadKeys.Button.A);
+
+
+        Button intakeToggle = new GamepadButton(driver, GamepadKeys.Button.A);
+        Button intakeReverse = new GamepadButton(driver, GamepadKeys.Button.B);
+        Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);
+
+        intakeToggle.whenPressed(new ToggleIntakeCommand(robot.intake));
+        intakeReverse.whileHeld(new SetIntake(robot.intake, Intake.MotorState.REVERSE));
+        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));
+
 
 
         robot.follower = Constants.createFollower(hardwareMap);
@@ -73,10 +79,6 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
         autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
-
-        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
-                new InstantCommand(() -> new SetIntake(robot.intake, Intake.MotorState.FORWARD))
-        );
 
 
         if (tag != null) {

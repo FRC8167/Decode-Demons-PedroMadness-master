@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 public class SetIntake extends CommandBase {
     private final Intake intake;
     private final Intake.MotorState motorState;
-//    private final Telemetry telemetry;
+
 
     public SetIntake(Intake intake, Intake.MotorState motorState) {
         this.intake = intake;
@@ -28,7 +28,6 @@ public class SetIntake extends CommandBase {
     @Override
     public void execute() {
         intake.setIntakeState();
-//        intake.periodic();
     }
 
 
