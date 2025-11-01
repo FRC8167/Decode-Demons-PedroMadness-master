@@ -47,8 +47,9 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public MotorEx driveMotorLR;
 
     public MotorEx intakeMotor;
-    public MotorGroup shooterMotors;
-    public MotorEx.Encoder shooterEncoder;
+    public MotorEx shooterMotor;
+//    public MotorGroup shooterMotors;
+//    public MotorEx.Encoder shooterEncoder;
 
     public Follower follower;
 
@@ -84,14 +85,18 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         intakeMotor.setRunMode(Motor.RunMode.RawPower);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        shooterMotors = new MotorGroup(new MotorEx(hardwareMap, "leftShooterMotor").setCachingTolerance(0.01),
-                new MotorEx(hardwareMap, "rightShooterMotor").setCachingTolerance(0.01)
-        );
+        shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
+        shooterMotor.setRunMode(Motor.RunMode.RawPower);
+        shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        shooterMotors.setRunMode(Motor.RunMode.RawPower);
-        shooterMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+//        shooterMotors = new MotorGroup(new MotorEx(hardwareMap, "leftShooterMotor").setCachingTolerance(0.01),
+//                new MotorEx(hardwareMap, "rightShooterMotor").setCachingTolerance(0.01)
+//        );
 
-        shooterEncoder = new MotorEx(hardwareMap, "rightShooterMotor").encoder;
+//        shooterMotors.setRunMode(Motor.RunMode.RawPower);
+//        shooterMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+//
+//        shooterEncoder = new MotorEx(hardwareMap, "rightShooterMotor").encoder;
 
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");

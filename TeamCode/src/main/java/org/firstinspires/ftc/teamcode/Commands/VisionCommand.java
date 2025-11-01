@@ -8,11 +8,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 public class VisionCommand extends CommandBase {
     private final Vision vision;
-//    private final Telemetry telemetry;
 
     public VisionCommand(Vision vision) {
         this.vision = vision;
-//        this.telemetry = telemetry;
         addRequirements(vision);
     }
 

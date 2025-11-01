@@ -12,6 +12,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleIntakeCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleShooterCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
@@ -49,22 +50,22 @@ public class MainTeleOp extends CommandOpMode {
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 
-
+        //Intake Button Binding
         Button intakeToggle = new GamepadButton(driver, GamepadKeys.Button.A);
         Button intakeReverse = new GamepadButton(driver, GamepadKeys.Button.B);
         Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);
-
         intakeToggle.whenPressed(new ToggleIntakeCommand(robot.intake));
         intakeReverse.whileHeld(new SetIntake(robot.intake, Intake.MotorState.REVERSE));
         intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));
 
+        //Shooter Button Binding
+        Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
+        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
 
 
         robot.follower = Constants.createFollower(hardwareMap);
         robot.follower.setStartingPose(startPose);
-//        if (gamepad1.right_bumper) {
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
-//        schedule(new SetIntake(robot.intake, Intake.MotorState.FORWARD));
         schedule(new VisionCommand(robot.vision));
 
 

@@ -36,12 +36,7 @@ public class AutoDMWTester extends CommandOpMode {
 
     public void buildPaths() {
         robot.follower.setStartingPose(startPose);
-        //A bezier line is just a straight path between two points
-//        Path justMove = new Path(new BezierLine(startPose, shootClosePose));
-//        justMove.setLinearHeadingInterpolation(startPose.getHeading(), shootClosePose.getHeading());
-//
-//        Path justCurve = new Path(new BezierCurve(shootClosePose, new Pose(80, 110), new Pose(120, 80)));
-//        justCurve.setLinearHeadingInterpolation(shootClosePose.getHeading(), Math.toRadians(180));
+
 
         doSomething = robot.follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootClosePose))
