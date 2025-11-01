@@ -17,6 +17,8 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .forwardZeroPowerAcceleration(-26.129)
             .lateralZeroPowerAcceleration(-58.025)
+            .forwardZeroPowerAcceleration(-36.47)
+            .lateralZeroPowerAcceleration(-53.82)
             .mass(5);  //TODO weigh the robot
 
 
@@ -32,7 +34,8 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .xVelocity(56.551)
+            .xVelocity(65.4)
+            .yVelocity(55.02)
             .rightFrontMotorName("RightFront")  //TODO check these names                                             c
             .rightRearMotorName("RightRear")
             .leftRearMotorName("LeftRear")

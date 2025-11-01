@@ -8,20 +8,21 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 public class SetIntake extends CommandBase {
     private final Intake intake;
     private final Intake.MotorState motorState;
-
+    ElapsedTime timer;
 
     public SetIntake(Intake intake, Intake.MotorState motorState) {
         this.intake = intake;
         this.motorState = motorState;
 //        this.telemetry = telemetry;
 
-        ElapsedTime timer;
+
 
         addRequirements(intake);
     }
 
     @Override
     public void initialize() {
+        timer.reset();
         intake.setMotorState(motorState);
     }
 
@@ -33,6 +34,7 @@ public class SetIntake extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false; // TODO: replace with end condition of the command
+        return timer.milliseconds() > 3000;
+        // TODO: replace with end condition of the command
     }
 }

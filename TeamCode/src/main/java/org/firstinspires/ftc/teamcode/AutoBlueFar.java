@@ -6,8 +6,10 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
@@ -39,13 +41,12 @@ public class AutoBlueFar extends CommandOpMode {
 
         path2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(artifactsGPPPose, collectGPPPose))
-                .setConstantHeadingInterpolation(Math.toRadians(90))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         path3= robot.follower.pathBuilder()
                 .addPath(new BezierLine(collectGPPPose, shootFarPose))
-                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toDegrees(135))
-                .setReversed()  //does this drive backwards?????
+                .setConstantHeadingInterpolation(Math.toRadians(135))
                 .build();
     }
 
@@ -68,15 +69,17 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(
                 // DO NOT REMOVE: updates follower to follow path
                 new RunCommand(() -> robot.follower.update()),
-                new WaitCommand(3000),  //replace with shoot command
-                new FollowPathCommand(robot.follower, path1, true),  //true hold end
-                new ParallelCommandGroup(
-                        new FollowPathCommand(robot.follower, path2, true),
-                        new RunCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
-                ),
-                new RunCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
-                new FollowPathCommand(robot.follower, path3, true),
-                new WaitCommand(3000)  //replace with shoot command
+//                new WaitCommand(3000),  //replace with shoot command
+                new SequentialCommandGroup(
+                    new FollowPathCommand(robot.follower, path1, false),  //true hold end
+                    new ParallelCommandGroup(
+                            new FollowPathCommand(robot.follower, path2, false),
+                            new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
+                    ),
+                    new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
+                    new FollowPathCommand(robot.follower, path3, false)
+    //                new WaitCommand(3000)  //replace with shoot command
+                )
         );
 
     }
