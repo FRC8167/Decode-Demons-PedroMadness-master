@@ -4,14 +4,14 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleIntakeCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleShooterCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
@@ -51,12 +51,12 @@ public class MainTeleOp extends CommandOpMode {
         operator = new GamepadEx(gamepad2);
 
         //Intake Button Binding
-        Button intakeToggle = new GamepadButton(driver, GamepadKeys.Button.A);
-        Button intakeReverse = new GamepadButton(driver, GamepadKeys.Button.B);
-        Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);
-        intakeToggle.whenPressed(new ToggleIntakeCommand(robot.intake));
-        intakeReverse.whileHeld(new SetIntake(robot.intake, Intake.MotorState.REVERSE));
-        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));
+        Button intakeToggleForward = new GamepadButton(driver, GamepadKeys.Button.A);
+        Button intakeToggleReverse = new GamepadButton(driver, GamepadKeys.Button.B);
+        Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);  //needed?
+        intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
+        intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
+        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
 
         //Shooter Button Binding
         Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);

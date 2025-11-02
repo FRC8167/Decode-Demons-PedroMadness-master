@@ -45,7 +45,7 @@ public class Intake extends SubsystemBase{
         }
 
 
-    public void toggleIntake() {
+    public void toggleForward() {
             if (motorState.equals(MotorState.FORWARD)) {
                 setMotorState(MotorState.STOP);
             } else {
@@ -53,6 +53,17 @@ public class Intake extends SubsystemBase{
             }
             setIntakeState();
         }
+
+    /** Toggle between REVERSE and STOP */
+    public void toggleReverse() {
+        if (motorState == MotorState.REVERSE) {
+            setMotorState(MotorState.STOP);
+        } else {
+            setMotorState(MotorState.REVERSE);
+        }
+        setIntakeState();
+    }
+
     @Override
     public void periodic() {
         setIntakeState();
