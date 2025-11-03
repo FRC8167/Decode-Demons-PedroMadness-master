@@ -35,6 +35,6 @@ public class SetIntake extends CommandBase {
     @Override
     public boolean isFinished() {
         return timer.milliseconds() > 3000;
-        // TODO: replace with end condition of the command
+        // returns true if >3s or false if <= 3s
     }
 }
