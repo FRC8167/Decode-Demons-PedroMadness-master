@@ -67,6 +67,7 @@ public class MainTeleOp extends CommandOpMode {
 
         Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
         shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
+
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.Y);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
 

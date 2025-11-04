@@ -22,6 +22,13 @@ public class DriveToPoseCommand extends CommandBase {
     public void initialize() {
 
         Pose currentPose = follower.getPose();
+
+        /* TODO
+            Does this reset the follower to the given pose? In your Auto, the start pose is
+            only used in the Path configuration.
+            If you hover over setStartingPose, it says "This sets the starting pose. Do not run
+            this after moving at all"
+         */
         follower.setStartingPose(currentPose);
 
 
