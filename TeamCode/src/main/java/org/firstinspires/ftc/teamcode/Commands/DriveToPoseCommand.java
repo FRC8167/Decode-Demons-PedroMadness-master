@@ -50,7 +50,7 @@ public class DriveToPoseCommand extends CommandBase {
             double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
 
             // Tolerances: 1 inch, 3 degrees
-            return distanceXError < 1.0 && distanceYError <1 && headingError < Math.toRadians(3) && !follower.isBusy();
+            return distanceXError < 1.0 && distanceYError <1 && headingError < Math.toRadians(3);
         }
 
 
