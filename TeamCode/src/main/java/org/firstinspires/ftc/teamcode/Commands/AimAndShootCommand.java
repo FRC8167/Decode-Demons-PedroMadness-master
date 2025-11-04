@@ -35,11 +35,26 @@ public class AimAndShootCommand extends CommandBase {
     public void initialize() {
         // Start driving to the target pose
         driveCommand = new DriveToPoseCommand(follower, targetPose);
+        /* TODO
+            Does this schedule the command or just run a function inside of it?
+         */
         driveCommand.initialize();
     }
 
     @Override
     public void execute() {
+
+        /* TODO
+            This calls and empty function in the drvieToPoseCommand.  I'm guessing the robot starts
+            moving on line 32, follower.followPath(pathToShoot)
+
+            Is using a command nested inside another command kosher?
+
+            Just thinking, but should the shooting portion of this be its own command.  In the
+            opMode, run a sequential or parallel sequence using the drive and shoot commands? Maybe
+            even three commands, driveToPosition, AimUsingAprilTag and Shoot.  When the first two
+            are valid, run the shoot command.
+         */
         driveCommand.execute();
 
 
@@ -53,6 +68,10 @@ public class AimAndShootCommand extends CommandBase {
             if (tag != null) {
                 SequentialCommandGroup shooterSequence = new SequentialCommandGroup(
                         new ToggleShooterCommand(shooter), // Turn on shooter
+                        /* TODO
+                            Instead of wait, I imagine the ToggleShooterCommand will set its
+                            isFinished method true when the desired RPM is achieved
+                         */
                         new WaitCommand(3000),             // Wait 3 seconds
                         new ToggleShooterCommand(shooter)  // Turn off shooter
                 );

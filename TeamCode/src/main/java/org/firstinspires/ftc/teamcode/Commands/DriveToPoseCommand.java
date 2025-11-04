@@ -25,9 +25,9 @@ public class DriveToPoseCommand extends CommandBase {
 
         /* TODO
             Does this reset the follower to the given pose? In your Auto, the start pose is
-            only used in the Path configuration.
+            only used in the pathBuilder.
             If you hover over setStartingPose, it says "This sets the starting pose. Do not run
-            this after moving at all"
+            this after moving at all".  I guess it is the pose of the robot at opMOde start.
          */
         follower.setStartingPose(currentPose);
 
