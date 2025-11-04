@@ -6,7 +6,6 @@ import com.pedropathing.paths.PathChain;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 public class DriveToPoseCommand extends CommandBase {
 
@@ -21,17 +20,16 @@ public class DriveToPoseCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        // Set starting pose for Pedro follower
+
         Pose currentPose = follower.getPose();
         follower.setStartingPose(currentPose);
 
-        // Build a path chain using the follower's pathBuilder
+
         PathChain pathToShoot = follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, targetPose))
                 .setLinearHeadingInterpolation(currentPose.getHeading(), targetPose.getHeading())
                 .build();
 
-        // Start following the path
         follower.followPath(pathToShoot);
 
     }

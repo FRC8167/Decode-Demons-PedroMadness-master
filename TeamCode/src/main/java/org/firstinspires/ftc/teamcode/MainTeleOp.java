@@ -9,6 +9,7 @@ import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Commands.AimAndShootCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
@@ -31,7 +32,7 @@ public class MainTeleOp extends CommandOpMode {
 
     private final Pose startPose = new Pose(24, 24, Math.toRadians(90)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
-    Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
+    private final Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
 
 
     @Override
@@ -63,15 +64,14 @@ public class MainTeleOp extends CommandOpMode {
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
         intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
 
-        //Shooter Button Binding
+
         Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
         shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
-
-
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.Y);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
 
-
+        Button AimAndShootButton = new GamepadButton(driver, GamepadKeys.Button.Y);
+        AimAndShootButton.whenPressed(new AimAndShootCommand(robot.follower, shootingPose, robot.vision, robot.shooter));
 
 
 
