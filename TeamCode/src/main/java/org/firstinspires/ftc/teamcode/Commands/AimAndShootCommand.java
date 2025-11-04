@@ -28,7 +28,7 @@ public class AimAndShootCommand extends CommandBase {
         this.targetPose = targetPose;
         this.vision = vision;
         this.shooter = shooter;
-        addRequirements(shooter); 
+        addRequirements(shooter);
     }
 
     @Override
