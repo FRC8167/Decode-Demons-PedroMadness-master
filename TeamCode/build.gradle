@@ -41,7 +41,14 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
-    implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // pedroPathing
+    implementation "org.solverslib:core:SNAPSHOT-7cdcc66"
+    implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66"
+    implementation "org.solverslib:panels:SNAPSHOT-7cdcc66"
 }
+
+//dependencies {
+//    implementation project(':FtcRobotController')
+//    implementation "org.solverslib:core:SNAPSHOT-7cdcc66" // core
+//    implementation "org.solverslib:pedroPathing:SNAPSHOT-7cdcc66" // pedroPathing
+//}
 

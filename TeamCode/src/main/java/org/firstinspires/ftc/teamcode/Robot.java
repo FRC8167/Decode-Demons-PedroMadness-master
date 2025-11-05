@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDriveBasic;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import com.pedropathing.follower.Follower;
 
@@ -52,6 +53,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //    public MotorEx.Encoder shooterEncoder;
 
     public Follower follower;
+
 
     public WebcamName webCam1;
 //    public Limelight3A limelight;
@@ -98,6 +100,11 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //
 //        shooterEncoder = new MotorEx(hardwareMap, "rightShooterMotor").encoder;
 
+        //moved from TeleOp
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(24,24, Math.toRadians(90)));
+
+
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setOffsets(6.5, 0.0, DistanceUnit.INCH);  //TODO measure this
@@ -122,7 +129,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         mdrive = new MecanumDriveBasic(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake = new Intake();
-        shooter = new Shooter();
+        shooter = new Shooter(shooterMotor);
         vision = new Vision(webCam1);
 
 

@@ -29,7 +29,7 @@ public class DriveToPoseCommand extends CommandBase {
             If you hover over setStartingPose, it says "This sets the starting pose. Do not run
             this after moving at all".  I guess it is the pose of the robot at opMOde start.
          */
-        follower.setStartingPose(currentPose);
+//        follower.setStartingPose(currentPose);
 
 
         PathChain pathToShoot = follower.pathBuilder()
@@ -55,8 +55,13 @@ public class DriveToPoseCommand extends CommandBase {
             double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
 
             // Tolerances: 1 inch, 3 degrees
-            return distanceXError < 1.0 && distanceYError <1 && headingError < Math.toRadians(3);
+            return distanceXError < 2.0 && distanceYError < 2.0 && headingError < Math.toRadians(3);
         }
+
+    @Override
+    public void end(boolean interrupted) {
+        follower.breakFollowing(); //end the Pedro follower when pose reached
+    }
 
 
 

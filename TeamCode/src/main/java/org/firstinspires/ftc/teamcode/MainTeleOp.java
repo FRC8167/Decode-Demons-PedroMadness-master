@@ -3,23 +3,25 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
-
-import org.firstinspires.ftc.teamcode.Commands.AimAndShootCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShootCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleShooterCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 
 //@Disabled
 @TeleOp(name="MainTeleOp", group="Competition")
@@ -33,7 +35,8 @@ public class MainTeleOp extends CommandOpMode {
     private final Pose startPose = new Pose(24, 24, Math.toRadians(90)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
-
+    private final double targetRPM = 0.75;
+    
 
     @Override
     public void initialize() {
@@ -48,15 +51,16 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
-        robot.follower = Constants.createFollower(hardwareMap);
-        robot.follower.setStartingPose(startPose);
+//        robot.follower = Constants.createFollower(hardwareMap);    //moved to Robot
+//        robot.follower.setStartingPose(startPose);
+
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
 
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 
-        //Intake Button Binding
+        //Intake Button Bindings
         Button intakeToggleForward = new GamepadButton(driver, GamepadKeys.Button.A);
         Button intakeToggleReverse = new GamepadButton(driver, GamepadKeys.Button.B);
         Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);  //needed?
@@ -64,21 +68,33 @@ public class MainTeleOp extends CommandOpMode {
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
         intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
 
-
+        //Shooter Button Bindings
         Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
         shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
-
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.Y);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
+        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
+        shootSequenceButton.whenPressed(new SequentialCommandGroup(
+                new DriveToPoseCommand(robot.follower, shootingPose),
+                new CommandBase() {
+                    @Override
+                    public void initialize() {
+                        AprilTagDetection tag = robot.vision.getFirstTargetTag();
+                        if (tag != null && (tag.id == 20 || tag.id == 24)) {
+                            gamepad1.rumble(1000); //just for proof of concept                  }
+                        }
+                    }
 
-        Button AimAndShootButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
-        AimAndShootButton.whenPressed(new AimAndShootCommand(robot.follower, shootingPose, robot.vision, robot.shooter));
-
-
-
-
-
-//        }
+                    @Override
+                    public boolean isFinished() {
+                        return true; // done immediately
+                    }
+                },
+                new ShooterSpinupCommand(robot.shooter, targetRPM),  //Temporarily set at 75% above
+                //TODO:  Need to add a feeder or spindexer here to feed artifact between intake and shooter
+                new ShootCommand(robot.shooter)
+            )
+        );
     }
 
     @Override
@@ -87,7 +103,6 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
         autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
-
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
@@ -103,6 +118,7 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX()*100)/100.0);
         telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY()*100)/100.0);
         telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading())*100)/100.0);
+        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
         telemetry.update();
     }
