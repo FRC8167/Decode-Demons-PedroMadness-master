@@ -6,6 +6,9 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.Subsystem;
 import com.seattlesolvers.solverslib.hardware.SensorColor;
+import com.seattlesolvers.solverslib.hardware.ServoEx;
+import com.seattlesolvers.solverslib.hardware.motors.CRServo;
+import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
@@ -15,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDriveBasic;
@@ -49,7 +53,13 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public MotorEx intakeMotor;
     public MotorEx shooterMotor;
-//    public MotorGroup shooterMotors;
+
+    public CRServo feederServoLeft;
+    public CRServo feederServoRight;
+    //TODO:  Make a CRServo Group with a Leader and Follower??
+
+
+//    public MotorGroup feederMotors;
 //    public MotorEx.Encoder shooterEncoder;
 
     public Follower follower;
@@ -68,6 +78,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public Shooter shooter;
     public SensorColor colorSensor;
     public Vision vision;
+    public Feeder feeder;
 
 
 
@@ -91,12 +102,19 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         shooterMotor.setRunMode(Motor.RunMode.RawPower);
         shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-//        shooterMotors = new MotorGroup(new MotorEx(hardwareMap, "leftShooterMotor").setCachingTolerance(0.01),
-//                new MotorEx(hardwareMap, "rightShooterMotor").setCachingTolerance(0.01)
-//        );
 
-//        shooterMotors.setRunMode(Motor.RunMode.RawPower);
-//        shooterMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+
+        CRServo feederServoLeft = hardwareMap.get(CRServo.class, "feederServoLeft");
+        CRServo feederServoRight = hardwareMap.get(CRServo.class, "feederServoRight");
+
+
+
+//        feederMotors = new MotorGroup(new MotorEx(hardwareMap, "leftFeederMotor").setCachingTolerance(0.01),
+//                new MotorEx(hardwareMap, "rightFeederMotor").setCachingTolerance(0.01)
+//        );
+//
+//        feederMotors.setRunMode(Motor.RunMode.RawPower);
+//        feederMotors.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
 //
 //        shooterEncoder = new MotorEx(hardwareMap, "rightShooterMotor").encoder;
 
@@ -129,12 +147,13 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         mdrive = new MecanumDriveBasic(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake = new Intake();
+        feeder = new Feeder((CRServoEx) feederServoLeft, (CRServoEx) feederServoRight);
         shooter = new Shooter(shooterMotor);
         vision = new Vision(webCam1);
 
 
         // Register Subsystems with the Command Scheduler
-        register(mecanumDrive, intake, shooter);
+        register(mecanumDrive, intake, shooter, feeder, vision);
 
         if (OP_MODE_TYPE.equals(OpModeType.AUTO)) {
             initHasMovement();
