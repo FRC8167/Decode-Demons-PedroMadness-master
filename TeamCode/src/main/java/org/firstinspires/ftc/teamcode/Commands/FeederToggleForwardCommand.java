@@ -19,7 +19,7 @@ public class FeederToggleForwardCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        feeder.toggleForward();
+        feeder.feed();
     }
 
     @Override

@@ -104,11 +104,10 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
 
 
-        CRServo feederServoLeft = hardwareMap.get(CRServo.class, "feederServoLeft");
-        CRServo feederServoRight = hardwareMap.get(CRServo.class, "feederServoRight");
-
-
-
+//        CRServo feederServoLeft = hardwareMap.get(CRServo.class, "feederServoLeft");
+//        CRServo feederServoRight = hardwareMap.get(CRServo.class, "feederServoRight");
+        CRServo feederServoLeft = new CRServo(hardwareMap, "feederServoLeft");
+        CRServo feederServoRight = new CRServo(hardwareMap, "feederServoRight");
 //        feederMotors = new MotorGroup(new MotorEx(hardwareMap, "leftFeederMotor").setCachingTolerance(0.01),
 //                new MotorEx(hardwareMap, "rightFeederMotor").setCachingTolerance(0.01)
 //        );
@@ -147,7 +146,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         mdrive = new MecanumDriveBasic(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake = new Intake();
-        feeder = new Feeder((CRServoEx) feederServoLeft, (CRServoEx) feederServoRight);
+        feeder = new Feeder(feederServoLeft, feederServoRight);
         shooter = new Shooter(shooterMotor);
         vision = new Vision(webCam1);
 
