@@ -8,7 +8,7 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Feeder extends SubsystemBase{
-    private final Robot robot = Robot.getInstance();
+//    private final Robot robot = Robot.getInstance();
 
         private final CRServo feederServoLeft;
         private final CRServo feederServoRight;

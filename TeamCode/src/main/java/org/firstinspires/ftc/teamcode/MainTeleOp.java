@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Commands.ToggleShooterCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -34,6 +35,7 @@ public class MainTeleOp extends CommandOpMode {
     public GamepadEx operator;
     public ElapsedTime timer;
     private final Robot robot = Robot.getInstance();
+
 
     private final Pose startPose = new Pose(24, 24, Math.toRadians(90)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
@@ -53,8 +55,8 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
-//        robot.follower = Constants.createFollower(hardwareMap);    //moved to Robot
-//        robot.follower.setStartingPose(startPose);
+
+
 
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));

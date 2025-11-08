@@ -1,10 +1,22 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
+import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
+
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends SubsystemBase{
-    private final Robot robot = Robot.getInstance();
+//    private final Robot robot = Robot.getInstance();
+    private final MotorEx intakeMotor;
+
+
+    public Intake(MotorEx motor) {
+        intakeMotor = motor;
+        intakeMotor.setRunMode(Motor.RunMode.RawPower);
+        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+
+    }
 
     public enum MotorState {
         REVERSE,
@@ -29,17 +41,17 @@ public class Intake extends SubsystemBase{
     public void setIntakeState() {
        switch (motorState) {
                 case FORWARD:
-                    robot.intakeMotor.set(INTAKE_FORWARD_SPEED);
+                    intakeMotor.set(INTAKE_FORWARD_SPEED);
                     break;
                 case REVERSE:
-                    robot.intakeMotor.set(INTAKE_REVERSE_SPEED);
+                    intakeMotor.set(INTAKE_REVERSE_SPEED);
                     break;
                 case PASSIVE:
-                    robot.intakeMotor.set(INTAKE_PASSIVE_SPEED);
+                    intakeMotor.set(INTAKE_PASSIVE_SPEED);
                     break;
                 case STOP:
                     default:
-                        robot.intakeMotor.set(0.0);
+                        intakeMotor.set(0.0);
                         break;
             }
         }

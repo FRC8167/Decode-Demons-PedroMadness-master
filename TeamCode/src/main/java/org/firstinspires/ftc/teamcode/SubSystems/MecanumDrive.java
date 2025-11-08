@@ -32,6 +32,10 @@ public class MecanumDrive extends SubsystemBase {
         frontRight.setInverted(false);
         backRight.setInverted(false);;
 
+        rightFront.setRunMode(Motor.RunMode.RawPower);
+        leftFront.setRunMode(Motor.RunMode.RawPower);
+        leftRear.setRunMode(Motor.RunMode.RawPower);
+        rightRear.setRunMode(Motor.RunMode.RawPower);
         // Initialize motors
         setMotorPower(0,0,0,0);
     }

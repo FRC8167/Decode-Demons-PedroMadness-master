@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.seattlesolvers.solverslib.command.Subsystem;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shooter extends SubsystemBase {
-    private final Robot robot = Robot.getInstance();
+//    private final Robot robot = Robot.getInstance();
     public MotorEx shooterMotor;
 
     // Track shooter state
@@ -15,7 +16,11 @@ public class Shooter extends SubsystemBase {
     double targetRPM = 0.0;
 
     public Shooter(MotorEx motor) {
-        this.shooterMotor = motor;
+        shooterMotor = motor;
+        shooterMotor.setRunMode(Motor.RunMode.RawPower);
+        shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setInverted(true);
+
     }
 
     // Turn the shooter on/off
