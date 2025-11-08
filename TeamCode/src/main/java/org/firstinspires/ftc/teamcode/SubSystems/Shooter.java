@@ -42,23 +42,28 @@ public class Shooter extends SubsystemBase {
 
     // Optional: just turn off
     public void turnOff() {
-        shooterMotor.set(0);
+        shooterMotor.set(0.0);
         isOn = false;
     }
 
     // Fake shooting once (for testing)
     public void fireOnce() {
-        shooterMotor.set(1.0); 
-        // use a Timer to stop after a few ms????
+        shooterMotor.set(1.0);
     }
 
     public void setVelocity(double targetRPM) {
         this.targetRPM = targetRPM;
         // Scale RPM to motor power [0,1]  Does this work??
-        double power = targetRPM / 6000.0; //TODO:  Confirm max power of shooter motor
+        double power = targetRPM / 6000.0;
         if (power > 1.0) power = 1.0;
         if (power < 0.0) power = 0.0;
 
         shooterMotor.set(power);
     }
+
+
+    public double getVelocity() {
+        return shooterMotor.getVelocity()*60.0/28.0;
+    }
 }
+

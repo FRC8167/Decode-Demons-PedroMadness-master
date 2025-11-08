@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import com.pedropathing.follower.Follower;
 
@@ -72,6 +73,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         driveMotorLR = new MotorEx(hardwareMap, "LeftRear").setCachingTolerance(0.01);
         driveMotorRR = new MotorEx(hardwareMap, "RightRear").setCachingTolerance(0.01);
 
+        follower = Constants.createFollower(hardwareMap);
 
 
         intakeMotor = new MotorEx(hardwareMap, "Intake").setCachingTolerance(0.01);

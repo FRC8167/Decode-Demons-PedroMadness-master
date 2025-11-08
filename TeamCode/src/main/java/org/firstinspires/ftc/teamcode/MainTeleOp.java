@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleShooterCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -67,9 +69,9 @@ public class MainTeleOp extends CommandOpMode {
         double rightTrigger = driver.gamepad.right_trigger; // range 0.0 to 1.0
 
         //Intake Button Bindings
-        Button intakeToggleForward = new GamepadButton(driver, GamepadKeys.Button.A);
-        Button intakeToggleReverse = new GamepadButton(driver, GamepadKeys.Button.B);
-        Button intakePassive = new GamepadButton(driver, GamepadKeys.Button.X);  //needed?
+        Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
+        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
+        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
         intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
         intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
@@ -77,31 +79,18 @@ public class MainTeleOp extends CommandOpMode {
 
 
         //Shooter Button Bindings
-        Button shooterToggle = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
+        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
         shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
-        Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.Y);
+        Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
         Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         double targetRPM = 0.75;
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
-                new DriveToPoseCommand(robot.follower, shootingPose),
-                new CommandBase() {
-                    @Override
-                    public void initialize() {
-                        AprilTagDetection tag = robot.vision.getFirstTargetTag();
-                        if (tag != null && (tag.id == 20 || tag.id == 24)) {
-                            gamepad1.rumble(1000); //just for proof of concept                  }
-                        }
-                    }
-
-                    @Override
-                    public boolean isFinished() {
-                        return true; // done immediately
-                    }
-                },
-                new ShooterSpinupCommand(robot.shooter, targetRPM),  //Temporarily set at 75% above
-                //TODO:  Need to add a feeder or spindexer here to feed artifact between intake and shooter
-                new ShootCommand(robot.shooter)
+                new ParallelCommandGroup(
+                    new DriveToPoseCommand(robot.follower, shootingPose),
+                    new ShooterSpinupCommand(robot.shooter, 6000)
+                ),
+                new FeederToggleForwardCommand(robot.feeder)
             )
         );
     }
@@ -114,7 +103,7 @@ public class MainTeleOp extends CommandOpMode {
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
         // Feeder control
-        if (gamepad1.right_trigger > 0.5) {
+        if (gamepad2.right_trigger > 0.5) {
             robot.feeder.feed();
 //        } else if (gamepad1.left_trigger < 0.5) {
 //            robot.feeder.reverse();
