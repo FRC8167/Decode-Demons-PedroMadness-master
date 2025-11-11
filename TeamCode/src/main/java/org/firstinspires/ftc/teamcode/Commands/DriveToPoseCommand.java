@@ -6,22 +6,26 @@ import com.pedropathing.paths.PathChain;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+//import com.seattlesolvers.solverslib.command.Robot;
+import org.firstinspires.ftc.teamcode.Robot;
+
 
 public class DriveToPoseCommand extends CommandBase {
 
-    private final Follower follower;
+//    private final Follower follower;
     private final Pose targetPose; // target pose including heading
+    private final Robot robot;
 
 
     public DriveToPoseCommand(Follower follower, Pose targetPose) {
-        this.follower = follower;
+        robot = Robot.getInstance();
         this.targetPose = targetPose;
     }
 
     @Override
     public void initialize() {
 
-        Pose currentPose = follower.getPose();
+        Pose currentPose = robot.follower.getPose();
 
         /* TODO
             Does this reset the follower to the given pose? In your Auto, the start pose is
@@ -32,12 +36,12 @@ public class DriveToPoseCommand extends CommandBase {
 //        follower.setStartingPose(currentPose);
 
 
-        PathChain pathToShoot = follower.pathBuilder()
+        PathChain pathToShoot = robot.follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, targetPose))
                 .setLinearHeadingInterpolation(currentPose.getHeading(), targetPose.getHeading())
                 .build();
 
-        follower.followPath(pathToShoot);
+        robot.follower.followPath(pathToShoot);
 
     }
 
@@ -49,7 +53,7 @@ public class DriveToPoseCommand extends CommandBase {
     @Override
 
     public boolean isFinished() {
-            Pose current = follower.getPose();
+            Pose current = robot.follower.getPose();
             double distanceXError = Math.abs(current.getX() - targetPose.getX());
             double distanceYError = Math.abs(current.getY() - targetPose.getY());
             double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
@@ -60,8 +64,9 @@ public class DriveToPoseCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        follower.breakFollowing(); //end the Pedro follower when pose reached
+//        robot.follower.breakFollowing(); //end the Pedro follower when pose reached
     }
+
 
 
 

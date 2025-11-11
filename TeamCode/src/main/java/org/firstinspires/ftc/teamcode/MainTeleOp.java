@@ -39,7 +39,7 @@ public class MainTeleOp extends CommandOpMode {
     private final Robot robot = Robot.getInstance();
 
 
-    private final Pose startPose = new Pose(24, 24, Math.toRadians(90)); // Test
+    private final Pose startPose = new Pose(24, 24, Math.toRadians(0)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
 
@@ -58,7 +58,7 @@ public class MainTeleOp extends CommandOpMode {
         }
 
 
-
+        robot.follower.setStartingPose(startPose);
 
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
@@ -126,6 +126,12 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY()*100)/100.0);
         telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading())*100)/100.0);
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
+
+        telemetry.addData("Shooter Power", robot.shooter.getPower());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Target Velocity (RPM)", robot.shooter.getTargetVelocity());
+        telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
+
 
         telemetry.update();
     }

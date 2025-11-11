@@ -17,8 +17,7 @@ public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
             .forwardZeroPowerAcceleration(-26.129)
             .lateralZeroPowerAcceleration(-58.025)
-            .forwardZeroPowerAcceleration(-36.47)
-            .lateralZeroPowerAcceleration(-53.82)
+
             .mass(5);  //TODO weigh the robot
 
 

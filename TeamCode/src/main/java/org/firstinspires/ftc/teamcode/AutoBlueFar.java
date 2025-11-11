@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous(name="AutoBlueFar") //, preselectTeleOp = "TeleOpMode", group="Name of Group")
 public class AutoBlueFar extends CommandOpMode {
     Robot robot = Robot.getInstance();
+
     private ElapsedTime timer;
     private final Pose startPose = new Pose(56, 8, Math.toRadians(135));
     private final Pose artifactsGPPPose = new Pose(56, 36, Math.toRadians(180));
@@ -64,11 +65,11 @@ public class AutoBlueFar extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        robot.follower = Constants.createFollower(hardwareMap);
+//        robot.follower = Constants.createFollower(hardwareMap);
         buildPaths();
         schedule(
                 // DO NOT REMOVE: updates follower to follow path
-                new RunCommand(() -> robot.follower.update()),
+//                new RunCommand(() -> robot.follower.update()),
 //                new WaitCommand(3000),  //replace with shoot command
                 new SequentialCommandGroup(
                     new FollowPathCommand(robot.follower, path1, false),  //true hold end
@@ -88,7 +89,12 @@ public class AutoBlueFar extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        telemetry.addData("timer", timer.milliseconds());
+        robot.follower.update();
+        robot.follower.getPose();
+        telemetry.addData("timer", timer.milliseconds()/1000);
+        telemetry.addData("X:  ", robot.follower.getPose().getX());
+        telemetry.addData("Y:  ", robot.follower.getPose().getY());
+        telemetry.addData("Theta:  ", robot.follower.getPose().getHeading());
         telemetry.update();
     }
 

@@ -62,8 +62,28 @@ public class Shooter extends SubsystemBase {
     }
 
 
+    //Helper methods or as Dave says:  getters???
+
     public double getVelocity() {
         return shooterMotor.getVelocity()*60.0/28.0;
     }
+
+
+    public double getTargetVelocity() {
+        return targetRPM;
+    }
+
+    public double getPower() {
+        return shooterMotor.get();
+    }
+
+    public boolean atTargetVelocity() {
+        return Math.abs(getVelocity() - targetRPM) < 100;
+    }
+
+    public boolean isOn() {
+        return isOn;
+    }
+
 }
 
