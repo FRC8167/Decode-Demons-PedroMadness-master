@@ -87,12 +87,12 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         CRServo feederServoLeft = new CRServo(hardwareMap, "feederServoLeft");
         CRServo feederServoRight = new CRServo(hardwareMap, "feederServoRight");
 //
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pinpoint.setOffsets(6.5, 0.0, DistanceUnit.INCH);  //TODO measure this
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH , 0.0, 0.0, AngleUnit.DEGREES,0.0));
+//        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+//        pinpoint.setOffsets(6.5, 0.0, DistanceUnit.INCH);  //TODO measure this
+//        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+//        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        pinpoint.resetPosAndIMU();
+//        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH , 0.0, 0.0, AngleUnit.DEGREES,0.0));
 
 //
         webCam1 = hardwareMap.get(WebcamName.class, "Webcam1");

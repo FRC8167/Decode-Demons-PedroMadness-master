@@ -60,6 +60,7 @@ public class MainTeleOp extends CommandOpMode {
 
 
         robot.follower.setStartingPose(startPose);
+        robot.follower.update();
 
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
