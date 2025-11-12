@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Button;
@@ -70,21 +71,23 @@ public class MainTeleOp extends CommandOpMode {
 
         //Intake Button Bindings
         Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
-        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
-        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
         intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
+
+        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
+
+        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
         intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
-
-
 
         //Shooter Button Bindings
         Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
         shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
+
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
-        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
+
         double targetRPM = 0.75;
+        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
@@ -93,6 +96,18 @@ public class MainTeleOp extends CommandOpMode {
                 new FeederToggleForwardCommand(robot.feeder)
             )
         );
+
+
+        /* Engage Drive Snail Mode */
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+
+        /* Drive Field Centric (Need to add command DriveFieldCentric) */
+        /*driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed (new DriveFieldCentric(robot.mecanumDrive, gamepad1, robot.follower.getHeading());
+         */
+
     }
 
     @Override
