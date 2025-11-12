@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
@@ -14,31 +17,116 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 public class MecanumDrive extends SubsystemBase {
 
     private final MotorEx frontLeft, backLeft, frontRight, backRight;
-    private boolean degradedMode = false;
-    private final double degradedMultiplier = 0.45;
+    //    private boolean degradedMode = false;
+    private double controlAuthority;
+    private final double DEGRADE_AUTHORITY = 0.35;
+    private final double MAX_AUTHORITY = 0.85;
 
-    // Optional: store last applied powers for telemetry
-    private double lastDrive = 0, lastStrafe = 0, lastTurn = 0;
+//    private enum Modes { ROBO_CENTRIC, FIELD_CENTRIC, CONSTANT_HEADING }
+//    private Modes mode = Modes.ROBO_CENTRIC;
 
     public MecanumDrive(MotorEx leftFront, MotorEx leftRear, MotorEx rightFront, MotorEx rightRear) {
-        this.frontLeft  = leftFront;
-        this.backLeft   = leftRear;
+
+        this.frontLeft = leftFront;
+        this.backLeft = leftRear;
         this.frontRight = rightFront;
-        this.backRight  = rightRear;
+        this.backRight = rightRear;
 
         // Set motor directions
         frontLeft.setInverted(true);
         backLeft.setInverted(true);
         frontRight.setInverted(false);
         backRight.setInverted(false);
+        ;
 
-        rightFront.setRunMode(Motor.RunMode.RawPower);
-        leftFront.setRunMode(Motor.RunMode.RawPower);
-        leftRear.setRunMode(Motor.RunMode.RawPower);
-        rightRear.setRunMode(Motor.RunMode.RawPower);
+        frontRight.setRunMode(Motor.RunMode.RawPower);
+        frontLeft.setRunMode(Motor.RunMode.RawPower);
+        backLeft.setRunMode(Motor.RunMode.RawPower);
+        backRight.setRunMode(Motor.RunMode.RawPower);
+
+        controlAuthority = MAX_AUTHORITY;
+
         // Initialize motors
-        setMotorPower(0,0,0,0);
+        setMotorPower(0, 0, 0, 0);
     }
+
+
+    /**
+     * Apply mecanum powers
+     *
+     * @param driveCmd  forward/back
+     * @param strafeCmd left/right
+     * @param turnCmd   rotation
+     */
+    public void drive(double driveCmd, double strafeCmd, double turnCmd) {
+
+        double drive = driveCmd * controlAuthority;
+        double strafe = strafeCmd * controlAuthority;
+        double turn = turnCmd * controlAuthority;
+
+        double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
+
+        double frontLeftPower = (drive + strafe + turn) / denominator;
+        double backLeftPower = (drive - strafe + turn) / denominator;
+        double frontRightPower = (drive - strafe - turn) / denominator;
+        double backRightPower = (drive + strafe - turn) / denominator;
+
+        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+    }
+
+
+    /**
+     * Drive with a constant heading
+     *
+     * @param driveCmd
+     * @param strafeCmd
+     * @param turnCmd
+     * @param currentHeading
+     * @param headingDeg
+     */
+    public void driveWithHeading(double driveCmd, double strafeCmd, double turnCmd, double currentHeading, double headingDeg) {
+
+        double error, gain, newTurnCmd;
+        double headingCourseGain = 0.1;
+        double headingFineGain = 0.05;
+
+        error = headingDeg - currentHeading;
+        /* Need Angle Wrap calculation to ensure turning the shortest distance */
+        if (error > 10) {
+            newTurnCmd = Range.clip(headingCourseGain * error, -1.0, 1.0);
+        } else {
+            newTurnCmd = Range.clip(headingFineGain * error, -1.0, 1.0);
+        }
+
+        drive(driveCmd, strafeCmd, newTurnCmd);
+    }
+
+
+    /**
+     * his routine drives the robot field relative
+     *
+     * @param forward
+     * @param right
+     * @param rotate
+     * @param currentHeading
+     */
+    public void driveFieldRelative(double forward, double right, double rotate, double currentHeading) {
+        // First, convert direction being asked to drive to polar coordinates
+        double theta = Math.atan2(forward, right);
+        double r = Math.hypot(right, forward);
+
+        // Second, rotate angle by the angle the robot is pointing
+        theta = AngleUnit.normalizeRadians(theta - currentHeading);
+//                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+
+        // Third, convert back to cartesian
+        double newForward = r * Math.sin(theta);
+        double newRight = r * Math.cos(theta);
+
+        // Finally, call the drive method with robot relative forward and right amounts
+        drive(newForward, newRight, rotate);
+    }
+
 
     /**
      * Low-level method: set motor power directly
@@ -50,48 +138,105 @@ public class MecanumDrive extends SubsystemBase {
         backRight.set(rr);
     }
 
-    /**
-     * Enable or disable degraded drive mode
-     */
-    public void setDegradedDrive(boolean condition) {
-        degradedMode = condition;
-    }
 
-    /**
-     * Apply mecanum powers
-     * @param driveCmd forward/back
-     * @param strafeCmd left/right
-     * @param turnCmd rotation
-     */
-    public void drive(double driveCmd, double strafeCmd, double turnCmd) {
-        double drive  = degradedMode ? driveCmd * degradedMultiplier : driveCmd * 0.8;
-        double strafe = degradedMode ? strafeCmd * degradedMultiplier : strafeCmd * 0.8;
-        double turn   = degradedMode ? turnCmd * degradedMultiplier : turnCmd * 0.8;
-
-        lastDrive  = drive;
-        lastStrafe = strafe;
-        lastTurn   = turn;
-
-        double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
-
-        double frontLeftPower  = (drive + strafe + turn) / denominator;
-        double backLeftPower   = (drive - strafe + turn) / denominator;
-        double frontRightPower = (drive - strafe - turn) / denominator;
-        double backRightPower  = (drive + strafe - turn) / denominator;
-
-        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-    }
-
-    // Optional getters for telemetry
-    public double getLastDrive() { return lastDrive; }
-    public double getLastStrafe() { return lastStrafe; }
-    public double getLastTurn() { return lastTurn; }
-
-    /**
-     * Periodic updates called automatically by command scheduler (50 Hz)
-     */
     @Override
     public void periodic() {
+    }
+
+
+    public void enableSnailDrive() {
+        controlAuthority = DEGRADE_AUTHORITY;
+    }
+
+    public void disableSnailDrive() {
+        controlAuthority = MAX_AUTHORITY;
+    }
+
+    public double getControlAuthority() {
+        return controlAuthority;
+    }
+}
+
+/* *********************************** 2024 Devils Code *********************************** */
+//    private final MotorEx frontLeft, backLeft, frontRight, backRight;
+//    private boolean degradedMode = false;
+//    private final double degradedMultiplier = 0.45;
+//
+//    // Optional: store last applied powers for telemetry
+//    private double lastDrive = 0, lastStrafe = 0, lastTurn = 0;
+//
+//    public MecanumDrive(MotorEx leftFront, MotorEx leftRear, MotorEx rightFront, MotorEx rightRear) {
+//        this.frontLeft  = leftFront;
+//        this.backLeft   = leftRear;
+//        this.frontRight = rightFront;
+//        this.backRight  = rightRear;
+//
+//        // Set motor directions
+//        frontLeft.setInverted(true);
+//        backLeft.setInverted(true);
+//        frontRight.setInverted(false);
+//        backRight.setInverted(false);
+//
+//        rightFront.setRunMode(Motor.RunMode.RawPower);
+//        leftFront.setRunMode(Motor.RunMode.RawPower);
+//        leftRear.setRunMode(Motor.RunMode.RawPower);
+//        rightRear.setRunMode(Motor.RunMode.RawPower);
+//        // Initialize motors
+//        setMotorPower(0,0,0,0);
+//    }
+//
+//    /**
+//     * Low-level method: set motor power directly
+//     */
+//    public void setMotorPower(double lf, double rf, double lr, double rr) {
+//        frontLeft.set(lf);
+//        frontRight.set(rf);
+//        backLeft.set(lr);
+//        backRight.set(rr);
+//    }
+//
+//    /**
+//     * Enable or disable degraded drive mode
+//     */
+//    public void setDegradedDrive(boolean condition) {
+//        degradedMode = condition;
+//    }
+//
+//    /**
+//     * Apply mecanum powers
+//     * @param driveCmd forward/back
+//     * @param strafeCmd left/right
+//     * @param turnCmd rotation
+//     */
+//    public void drive(double driveCmd, double strafeCmd, double turnCmd) {
+//        double drive  = degradedMode ? driveCmd * degradedMultiplier : driveCmd * 0.8;
+//        double strafe = degradedMode ? strafeCmd * degradedMultiplier : strafeCmd * 0.8;
+//        double turn   = degradedMode ? turnCmd * degradedMultiplier : turnCmd * 0.8;
+//
+//        lastDrive  = drive;
+//        lastStrafe = strafe;
+//        lastTurn   = turn;
+//
+//        double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
+//
+//        double frontLeftPower  = (drive + strafe + turn) / denominator;
+//        double backLeftPower   = (drive - strafe + turn) / denominator;
+//        double frontRightPower = (drive - strafe - turn) / denominator;
+//        double backRightPower  = (drive + strafe - turn) / denominator;
+//
+//        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+//    }
+//
+//    // Optional getters for telemetry
+//    public double getLastDrive() { return lastDrive; }
+//    public double getLastStrafe() { return lastStrafe; }
+//    public double getLastTurn() { return lastTurn; }
+//
+//    /**
+//     * Periodic updates called automatically by command scheduler (50 Hz)
+//     */
+//    @Override
+//    public void periodic() {
         // Update Pedro odometry
 //        Robot.getInstance().pedro.update();  TODO  How to add Pedropathing here
 
@@ -105,9 +250,9 @@ public class MecanumDrive extends SubsystemBase {
 //        Robot.getInstance().telemetry.addData("Strafe Cmd", lastStrafe);
 //        Robot.getInstance().telemetry.addData("Turn Cmd", lastTurn);
 //        Robot.getInstance().telemetry.update();
-    }
-}
-
+//    }
+//}
+/* *********************************** END 2024 Devils Code *********************************** */
 
 
 
