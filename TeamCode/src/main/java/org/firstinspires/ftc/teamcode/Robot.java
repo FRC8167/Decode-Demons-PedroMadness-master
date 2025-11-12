@@ -27,17 +27,23 @@ import java.util.List;
 
 
 public class Robot extends com.seattlesolvers.solverslib.command.Robot {
+
     private static final Robot instance = new Robot();
     public static Robot getInstance() {
         return instance;
     }
-    public Telemetry telemetry;
+
+
     public enum OpModeType {
         AUTO,
         TELEOP
     }
+
+    public Telemetry telemetry;
+
     public static OpModeType OP_MODE_TYPE;
     static List<LynxModule> ctrlHubs;
+
     public MotorEx driveMotorRF;
     public MotorEx driveMotorLF;
     public MotorEx driveMotorRR;
@@ -56,7 +62,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //    public IMU imu;
 
     public MecanumDrive mecanumDrive;
-    public MecanumDrive mdrive;
+//    public MecanumDrive mdrive;
 
     public Intake intake;
     public Shooter shooter;
@@ -75,16 +81,12 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         follower = Constants.createFollower(hardwareMap);
 
-
         intakeMotor = new MotorEx(hardwareMap, "Intake").setCachingTolerance(0.01);
         shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
 
         CRServo feederServoLeft = new CRServo(hardwareMap, "feederServoLeft");
         CRServo feederServoRight = new CRServo(hardwareMap, "feederServoRight");
 //
-
-
-
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setOffsets(6.5, 0.0, DistanceUnit.INCH);  //TODO measure this
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
@@ -105,12 +107,10 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
         //Instantiate Subsystems
         mecanumDrive = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
-
-        mdrive = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
-        intake = new Intake(intakeMotor);
-        feeder = new Feeder(feederServoLeft, feederServoRight);
+        intake  = new Intake(intakeMotor);
+        feeder  = new Feeder(feederServoLeft, feederServoRight);
         shooter = new Shooter(shooterMotor);
-        vision = new Vision(webCam1);
+        vision  = new Vision(webCam1);
 
 
         // Register Subsystems with the Command Scheduler
