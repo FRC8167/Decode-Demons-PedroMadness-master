@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase{
         PASSIVE
     }
 
-    public static double INTAKE_FORWARD_SPEED = 0.5;
+    public static double INTAKE_FORWARD_SPEED = 1.0;
     public static double INTAKE_REVERSE_SPEED = -0.5; // unused
     public static double INTAKE_PASSIVE_SPEED = 0.2;
     public MotorState motorState = MotorState.STOP;
