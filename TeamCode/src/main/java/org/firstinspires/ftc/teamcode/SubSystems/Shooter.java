@@ -13,11 +13,13 @@ public class Shooter extends SubsystemBase {
 
     // Track shooter state
     public boolean isOn = false;
-    double targetRPM = 0.0;
+//    double targetRPM = 0.0;
+    double targetVelocity = 0.0;
 
     public Shooter(MotorEx motor) {
         shooterMotor = motor;
-        shooterMotor.setRunMode(Motor.RunMode.RawPower);
+//        shooterMotor.setRunMode(Motor.RunMode.RawPower);
+        shooterMotor.setRunMode(Motor.RunMode.VelocityControl);
         shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setInverted(true);
 
@@ -51,26 +53,29 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(1.0);
     }
 
-    public void setVelocity(double targetRPM) {
-        this.targetRPM = targetRPM;
-        // Scale RPM to motor power [0,1]  Does this work??
-        double power = targetRPM / 6000.0;
-        if (power > 1.0) power = 1.0;
-        if (power < 0.0) power = 0.0;
+    public void setVelocity(double targetVelocity) {
+//        this.targetRPM = targetRPM;
+//        // Scale RPM to motor power [0,1]  Does this work??
+//        double power = targetRPM / 6000.0;
+//        if (power > 1.0) power = 1.0;
+//        if (power < 0.0) power = 0.0;
+//
+//        shooterMotor.set(power);
+        this.targetVelocity = targetVelocity;
+        shooterMotor.setVelocity(targetVelocity*28.0/60.0);
 
-        shooterMotor.set(power);
     }
 
 
     //Helper methods or as Dave says:  getters???
 
     public double getVelocity() {
-        return shooterMotor.getVelocity()*60.0/28.0;
+        return shooterMotor.getVelocity()/28.0*60.0;
     }
 
 
     public double getTargetVelocity() {
-        return targetRPM;
+        return targetVelocity;
     }
 
     public double getPower() {
@@ -78,7 +83,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean atTargetVelocity() {
-        return Math.abs(getVelocity() - targetRPM) < 100;
+        return Math.abs(getVelocity() - targetVelocity) < 100;
     }
 
     public boolean isOn() {
