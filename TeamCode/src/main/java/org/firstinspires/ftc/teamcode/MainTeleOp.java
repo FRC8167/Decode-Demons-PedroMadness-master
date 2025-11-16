@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,14 +10,13 @@ import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
+import com.bylazar.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
+
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
-import org.firstinspires.ftc.teamcode.SubSystems.Intake;
-import org.firstinspires.ftc.teamcode.Commands.SetIntake;
+
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -29,6 +28,7 @@ public class MainTeleOp extends CommandOpMode {
     public GamepadEx operator;
     public ElapsedTime timer;
     private final Robot robot = Robot.getInstance();
+    static TelemetryManager telemetryM;
 
 
     private final Pose startPose = new Pose(24, 24, Math.toRadians(0)); // Test
@@ -49,7 +49,7 @@ public class MainTeleOp extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         targetVelocity = 3000; //rpm
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
@@ -146,7 +146,8 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
         telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
-
+        telemetryM.debug("This should print something on the Panels dashboard!");
+        telemetryM.update(telemetry);
         telemetry.update();
     }
 
