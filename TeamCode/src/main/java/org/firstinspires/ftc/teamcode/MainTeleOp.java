@@ -98,9 +98,9 @@ public class MainTeleOp extends CommandOpMode {
                 .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
 
         /* Engage Drive Snail Mode */
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
-                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+//                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
+//                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
 
         /* Drive Field Centric (Need to add command DriveFieldCentric) */
         /*driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
@@ -143,10 +143,10 @@ public class MainTeleOp extends CommandOpMode {
 
         telemetry.addData("Shooter Power", robot.shooter.getPower());
         telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
-        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
-        telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
-
+        telemetryM.addData("Shooter Target Velocity (RPM)", targetVelocity);
+        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
         telemetryM.debug("This should print something on the Panels dashboard!");
+
         telemetryM.update(telemetry);
         telemetry.update();
     }
