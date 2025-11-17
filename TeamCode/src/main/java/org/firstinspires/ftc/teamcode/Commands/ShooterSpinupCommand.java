@@ -33,13 +33,12 @@ public class ShooterSpinupCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-//        return shooterPID.atSetPoint();
-        return shooter.getVelocity() > (targetVelocity - 20);
+        return shooterPID.atSetPoint();
     }
 
 
     @Override
     public void end(boolean interrupted) {
-        shooter.turnOff();
+//        shooter.turnOff();
     }
 }
