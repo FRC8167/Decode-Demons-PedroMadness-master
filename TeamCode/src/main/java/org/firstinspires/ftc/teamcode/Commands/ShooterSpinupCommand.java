@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands;
+import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
@@ -31,7 +33,8 @@ public class ShooterSpinupCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return shooterPID.atSetPoint();
+//        return shooterPID.atSetPoint();
+        return shooter.getVelocity() > (targetVelocity - 20);
     }
 
 

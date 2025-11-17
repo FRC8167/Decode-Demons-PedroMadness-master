@@ -64,7 +64,7 @@ public class DriveToPoseCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-//        robot.follower.breakFollowing(); //end the Pedro follower when pose reached
+        robot.follower.resumePathFollowing();
     }
 
 

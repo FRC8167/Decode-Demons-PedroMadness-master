@@ -14,6 +14,8 @@ import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 
+import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -47,7 +49,7 @@ public class AutoBlueFar extends CommandOpMode {
 
         path3= robot.follower.pathBuilder()
                 .addPath(new BezierLine(collectGPPPose, shootFarPose))
-                .setConstantHeadingInterpolation(Math.toRadians(135))
+                .setConstantHeadingInterpolation(Math.toRadians(-45))
                 .build();
     }
 
@@ -77,9 +79,16 @@ public class AutoBlueFar extends CommandOpMode {
                             new FollowPathCommand(robot.follower, path2, false),
                             new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
                     ),
-                    new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
-                    new FollowPathCommand(robot.follower, path3, false)
-    //                new WaitCommand(3000)  //replace with shoot command
+
+
+                    new ParallelCommandGroup(
+
+                            new FollowPathCommand(robot.follower, path3, false),
+                            new ShooterSpinupCommand(robot.shooter, 3000)
+                    ),
+                    new InstantCommand(() -> robot.feeder.feed()),
+                    new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
+
                 )
         );
 

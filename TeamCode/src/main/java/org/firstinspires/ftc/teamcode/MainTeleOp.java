@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Button;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -13,8 +15,11 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import com.bylazar.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
+import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 
+import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -64,36 +69,36 @@ public class MainTeleOp extends CommandOpMode {
         double rightTrigger = driver.gamepad.right_trigger; // range 0.0 to 1.0
 
         //Intake Button Bindings
-//        Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
-//        intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
+        Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
+        intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
 
-//        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
-//        intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
+        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
+        intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
 
 //        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
 //        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
 
-        //Shooter Button Bindings
+//        Shooter Button Bindings
 //        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
 //        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
 
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
 
-//         Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
-//        shootSequenceButton.whenPressed(new SequentialCommandGroup(
-//                new ParallelCommandGroup(
-//                    new DriveToPoseCommand(robot.follower, shootingPose),
-//                    new ShooterSpinupCommand(robot.shooter, 6000)
-//                ),
-//                new FeederToggleForwardCommand(robot.feeder)
-//            )
-//        );
+        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
+        shootSequenceButton.whenPressed(new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new DriveToPoseCommand(robot.follower, shootingPose),
+                    new ShooterSpinupCommand(robot.shooter, 3000)
+                ),
+                new FeederToggleForwardCommand(robot.feeder)
+            )
+        );
 
 //        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.B);
 //        shootSequenceButton.whileHeld (new ShooterSpinupCommand(robot.shooter, 3000));
 
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity))
                 .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
 
