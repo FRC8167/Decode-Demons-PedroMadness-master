@@ -44,15 +44,15 @@ public class Shooter_Alternate extends SubsystemBase {
         shooterPID.setTolerance(rpmToTicksPerSec(pidToleranceRPM));
 
         double currentVelocity = shooterMotor.getVelocity();
-        double output = shooterPID.calculate(currentVelocity, rpmToTicksPerSec(targetRPM));
+        double output = shooterPID.calculate(currentVelocity, targetRPM);
 
         shooterMotor.set(output);
     }
 
 
     public void setVelocity(double targetRevPerMin) {
-        targetRPM = targetRevPerMin;
-        shooterPID.setSetPoint(rpmToTicksPerSec(targetRPM));
+        targetRPM = rpmToTicksPerSec(targetRevPerMin);
+        shooterPID.setSetPoint(targetRPM);
     }
 
 
