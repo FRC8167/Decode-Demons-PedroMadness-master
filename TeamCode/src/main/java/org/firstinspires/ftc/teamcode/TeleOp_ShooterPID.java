@@ -64,9 +64,11 @@ public class TeleOp_ShooterPID extends OpMode {
 
         // Display on Panels
         tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
+        tmPanels.debug("TeleOp Command", cmd);
         tmPanels.debug("Shooter Target Velocity (RPM)",  shooter.getTargetRPM());
         tmPanels.debug("Shooter TPS", "%.1f",            shooter.getTicsPerSec());
-//        tmPanels.graph("command", cmd);
+
+//         tmPanels.graph("command", cmd);
 //        tmPanels.graph("Actual", shooter.getRPM());
 
         tmPanels.update(telemetry);     // Should update both the driver station and panels
