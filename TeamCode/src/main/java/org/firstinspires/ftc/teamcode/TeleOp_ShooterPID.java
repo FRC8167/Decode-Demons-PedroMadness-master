@@ -23,7 +23,7 @@ public class TeleOp_ShooterPID extends OpMode {
     GamepadEx operator;
     ElapsedTime timer;
 
-    double cmd;
+    static double cmd;
 
     static TelemetryManager tmPanels;
 
@@ -35,6 +35,7 @@ public class TeleOp_ShooterPID extends OpMode {
         tmPanels = PanelsTelemetry.INSTANCE.getTelemetry();
         operator = new GamepadEx(gamepad2);
     }
+
 
     @Override
     public void init_loop() {
