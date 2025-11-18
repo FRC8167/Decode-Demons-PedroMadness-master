@@ -24,6 +24,7 @@ public class TeleOp_ShooterPID extends OpMode {
     ElapsedTime timer;
 
     static double cmd;
+    static double MAX_MOTOR_RPM = 6000;
 
     static TelemetryManager tmPanels;
 
@@ -31,9 +32,9 @@ public class TeleOp_ShooterPID extends OpMode {
     @Override
     public void init() {
         MotorEx shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
+        operator = new GamepadEx(gamepad2);
         shooter  = new Shooter_Alternate(shooterMotor);
         tmPanels = PanelsTelemetry.INSTANCE.getTelemetry();
-        operator = new GamepadEx(gamepad2);
     }
 
 
@@ -52,11 +53,12 @@ public class TeleOp_ShooterPID extends OpMode {
     @Override
     public void loop() {
 
+        // Create square wave command between 20%-80% of motor full speed rpm
         if(timer.seconds() <= 5) {
-            cmd = 6000 * 0.80;
-            shooter.setVelocity(6000 * cmd);
+            cmd = MAX_MOTOR_RPM * 0.80;
+            shooter.setVelocity(cmd);
         } else if(timer.seconds() <= 10) {
-            cmd = 6000 * 0.20;
+            cmd = MAX_MOTOR_RPM * 0.20;
             shooter.setVelocity(cmd);
         } else timer.reset();
 
@@ -64,7 +66,8 @@ public class TeleOp_ShooterPID extends OpMode {
         tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
         tmPanels.debug("Shooter Target Velocity (RPM)",  shooter.getTargetRPM());
         tmPanels.debug("Shooter TPS", "%.1f",            shooter.getTicsPerSec());
-//        tmPanels.graph("wave", cmd);
+//        tmPanels.graph("command", cmd);
+//        tmPanels.graph("Actual", shooter.getRPM());
 
         tmPanels.update(telemetry);     // Should update both the driver station and panels
 
