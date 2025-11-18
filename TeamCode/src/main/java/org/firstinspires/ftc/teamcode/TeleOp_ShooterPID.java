@@ -53,7 +53,7 @@ public class TeleOp_ShooterPID extends OpMode {
     @Override
     public void loop() {
 
-        // Create square wave command between 20%-80% of motor full speed rpm
+        // Create square wave command between 20%-80% of motor full speed rpm. 5s High and 5s low
         if(timer.seconds() <= 5) {
             cmd = MAX_MOTOR_RPM * 0.80;
             shooter.setVelocity(cmd);
