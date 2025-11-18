@@ -31,7 +31,7 @@ public class Shooter_Alternate extends SubsystemBase {
         shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setInverted(true);
         shooterPID = new PIDFController(kP, kI, kD, kV);
-        shooterPID.setTolerance(50);
+        shooterPID.setTolerance(rpmToTicksPerSec(50));
 
         shooterMotor.setVelocity(0);
     }
@@ -41,7 +41,7 @@ public class Shooter_Alternate extends SubsystemBase {
     public void periodic() {
 
         shooterPID.setPIDF(kP, kI, kD, kV);
-        shooterPID.setTolerance(pidToleranceRPM);
+        shooterPID.setTolerance(rpmToTicksPerSec(pidToleranceRPM));
 
         double currentVelocity = shooterMotor.getVelocity();
         double output = shooterPID.calculate(currentVelocity, rpmToTicksPerSec(targetRPM));
