@@ -27,16 +27,7 @@ public class DriveToPoseCommand extends CommandBase {
 
         Pose currentPose = robot.follower.getPose();
 
-        /* TODO
-            Does this reset the follower to the given pose? In your Auto, the start pose is
-            only used in the pathBuilder.
-            If you hover over setStartingPose, it says "This sets the starting pose. Do not run
-            this after moving at all".  I guess it is the pose of the robot at opMOde start.
-         */
-//        follower.setStartingPose(currentPose);
-
-
-        PathChain pathToShoot = robot.follower.pathBuilder()
+         PathChain pathToShoot = robot.follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, targetPose))
                 .setLinearHeadingInterpolation(currentPose.getHeading(), targetPose.getHeading())
                 .build();

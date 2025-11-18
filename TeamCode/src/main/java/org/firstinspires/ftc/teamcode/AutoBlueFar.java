@@ -25,10 +25,10 @@ public class AutoBlueFar extends CommandOpMode {
     Robot robot = Robot.getInstance();
 
     private ElapsedTime timer;
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(135));
+    private final Pose startPose = new Pose(56, 8, Math.toRadians(-70));
     private final Pose artifactsGPPPose = new Pose(56, 36, Math.toRadians(180));
     private final Pose collectGPPPose = new Pose(20, 36, Math.toRadians(180));
-    private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-45));
+    private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-70));
 
 
     private PathChain path1, path2, path3;
@@ -69,28 +69,7 @@ public class AutoBlueFar extends CommandOpMode {
         }
 //        robot.follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        schedule(
-                // DO NOT REMOVE: updates follower to follow path
-//                new RunCommand(() -> robot.follower.update()),
-//                new WaitCommand(3000),  //replace with shoot command
-                new SequentialCommandGroup(
-                    new FollowPathCommand(robot.follower, path1, false),  //true hold end
-                    new ParallelCommandGroup(
-                            new FollowPathCommand(robot.follower, path2, false),
-                            new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
-                    ),
 
-
-                    new ParallelCommandGroup(
-
-                            new FollowPathCommand(robot.follower, path3, false),
-                            new ShooterSpinupCommand(robot.shooter, 3000)
-                    ),
-                    new InstantCommand(() -> robot.feeder.feed()),
-                    new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
-
-                )
-        );
 
     }
 
@@ -98,12 +77,38 @@ public class AutoBlueFar extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        schedule(
+                // DO NOT REMOVE: updates follower to follow path
+//                new RunCommand(() -> robot.follower.update()),
+//                new WaitCommand(3000),  //replace with shoot command
+                new SequentialCommandGroup(
+                        new ShooterSpinupCommand(robot.shooter, 4000, telemetry),
+                        new InstantCommand(() -> robot.feeder.feed()),
+                        new FollowPathCommand(robot.follower, path1, false),  //true hold end
+                        new ParallelCommandGroup(
+                                new FollowPathCommand(robot.follower, path2, false),
+                                new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
+                        ),
+
+
+                        new ParallelCommandGroup(
+
+                                new FollowPathCommand(robot.follower, path3, false),
+                                new ShooterSpinupCommand(robot.shooter, 4000, telemetry)
+                        ),
+                        new InstantCommand(() -> robot.feeder.feed()),
+                        new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
+
+                )
+        );
+
         robot.follower.update();
         robot.follower.getPose();
         telemetry.addData("timer", timer.milliseconds()/1000);
         telemetry.addData("X:  ", robot.follower.getPose().getX());
         telemetry.addData("Y:  ", robot.follower.getPose().getY());
         telemetry.addData("Theta:  ", robot.follower.getPose().getHeading());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
         telemetry.update();
     }
 

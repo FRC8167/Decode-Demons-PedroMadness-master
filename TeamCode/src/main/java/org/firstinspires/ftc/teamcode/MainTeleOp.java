@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Configurable
+
 //@Disabled
 @TeleOp(name="MainTeleOp", group="Competition")
 public class MainTeleOp extends CommandOpMode {
@@ -40,10 +40,10 @@ public class MainTeleOp extends CommandOpMode {
 
     private final Pose startPose = new Pose(24, 24, Math.toRadians(0)); // Test
     private Pose autoEndPose = new Pose(0, 0, 0);
-    private final Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
+    private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
 
-//    private double targetVelocity;
-    public static double targetVelocity;
+    private double targetVelocity;
+//    public static double targetVelocity;
 
     @Override
     public void initialize() {
@@ -92,18 +92,16 @@ public class MainTeleOp extends CommandOpMode {
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
-                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
+                    new ShooterSpinupCommand(robot.shooter, targetVelocity, telemetry)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
         );
 
-//        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.B);
-//        shootSequenceButton.whileHeld (new ShooterSpinupCommand(robot.shooter, 3000));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity))
-                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+                .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity, telemetry))
+                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0, telemetry));
 
         /* Engage Drive Snail Mode */
 //        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -153,13 +151,13 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
         telemetry.addData("Shooter Power", robot.shooter.getPower());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
-        telemetryM.addData("Shooter Target Velocity (RPM)", targetVelocity);
-        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
-        telemetryM.debug("This should print something on the Panels dashboard!");
+//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+//        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
+//        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
+//        telemetry.debug("This should print something on the Panels dashboard!");
 
         telemetryM.update(telemetry);
-        telemetry.update();
+//        telemetry.update();
     }
 
 //        if (gamepad1.left_bumper) {
