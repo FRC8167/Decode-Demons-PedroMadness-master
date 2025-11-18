@@ -52,6 +52,7 @@ public class Shooter_Alternate extends SubsystemBase {
 
     public void setVelocity(double targetRevPerMin) {
         targetRPM = targetRevPerMin;
+        shooterPID.setSetPoint(rpmToTicksPerSec(targetRPM));
     }
 
 
