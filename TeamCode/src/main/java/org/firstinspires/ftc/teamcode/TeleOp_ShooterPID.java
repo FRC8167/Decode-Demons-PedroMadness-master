@@ -59,8 +59,6 @@ public class TeleOp_ShooterPID extends OpMode {
             shooter.setVelocity(cmd);
         } else timer.reset();
 
-//        tmPanels.graph("wave", cmd);
-
         // Display on Panels
         tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
         tmPanels.debug("Shooter Target Velocity (RPM)",  shooter.getTargetRPM());
