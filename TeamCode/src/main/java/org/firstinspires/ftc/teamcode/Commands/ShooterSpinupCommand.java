@@ -5,18 +5,21 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
-
+@Configurable
 public class ShooterSpinupCommand extends CommandBase {
 
     private final Shooter shooter;
-    private final double targetVelocity;
+
+    public static double targetVelocity;
     private final PIDController shooterPID;
+    double kp = 14.0;
+    double kd = 0.0;
 
 
     public ShooterSpinupCommand(Shooter shooter, double targetVelocity) {
         this.shooter = shooter;
         this.targetVelocity = targetVelocity;
-        shooterPID = new PIDController(14.0, 0.0, 0.0);
+        shooterPID = new PIDController(kp, 0.0, kd);
     }
 
     @Override

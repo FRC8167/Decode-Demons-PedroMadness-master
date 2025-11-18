@@ -24,8 +24,8 @@ public class Feeder extends SubsystemBase{
         }
 
         public void reverse() {
-            feederServoLeft.set(-1.0);
-            feederServoRight.set(1.0);
+            feederServoLeft.set(1.0);
+            feederServoRight.set(-1.0);
         }
 
         public void stop() {
