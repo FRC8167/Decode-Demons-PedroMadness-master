@@ -15,6 +15,7 @@ public class Shooter_Alternate extends SubsystemBase {
     private final MotorEx shooterMotor;
     private final double ENCODER_TICKS = 28;
     private final PIDFController shooterPID;
+    private double ticksPerSec;
 
     /* Public Static for Panels Access */
     public static double targetRPM = 0.0;
@@ -40,19 +41,20 @@ public class Shooter_Alternate extends SubsystemBase {
     @Override
     public void periodic() {
 
+        /* *** These two lines needed for dynamic panels updating *** */
         shooterPID.setPIDF(kP, kI, kD, kV);
         shooterPID.setTolerance(rpmToTicksPerSec(pidToleranceRPM));
 
         double currentVelocity = shooterMotor.getVelocity();
-        double output = shooterPID.calculate(currentVelocity, targetRPM);
+        double output = shooterPID.calculate(currentVelocity, ticksPerSec);
 
         shooterMotor.set(output);
     }
 
 
     public void setVelocity(double targetRevPerMin) {
-        targetRPM = rpmToTicksPerSec(targetRevPerMin);
-        shooterPID.setSetPoint(targetRPM);
+        ticksPerSec = rpmToTicksPerSec(targetRevPerMin);
+        shooterPID.setSetPoint(ticksPerSec);
     }
 
 
