@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
