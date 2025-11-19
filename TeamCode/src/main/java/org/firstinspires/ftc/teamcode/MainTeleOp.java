@@ -58,6 +58,8 @@ public class MainTeleOp extends CommandOpMode {
         }
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         double targetVelocity = 4000; //rpm
+//        double targetRPM = 6000; //rpm
+
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
@@ -91,7 +93,9 @@ public class MainTeleOp extends CommandOpMode {
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
-                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
+                        new ShooterSpinupCommand(robot.shooter, targetVelocity)
+
+//                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
