@@ -85,6 +85,8 @@ public class AutoBlueFar extends CommandOpMode {
                         new ShooterSpinupCommand(robot.shooter, 6000),
                         new InstantCommand(() -> robot.feeder.feed()),
                         new FollowPathCommand(robot.follower, path1, false),  //true hold end
+                        new WaitCommand(2000),
+                        new InstantCommand(() -> robot.feeder.stop()),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robot.follower, path2, false),
                                 new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))

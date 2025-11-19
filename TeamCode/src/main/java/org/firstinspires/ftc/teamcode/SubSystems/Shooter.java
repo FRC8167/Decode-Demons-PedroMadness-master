@@ -12,82 +12,74 @@ public class Shooter extends SubsystemBase {
     public MotorEx shooterMotor;
 
     // Track shooter state
-    public boolean isOn = false;
-    double targetRPM = 0.0;
+//    public boolean isOn = false;
+//    double targetRPM = 0.0;
     double targetVelocity = 0.0;
-    double power = 0.0;
+//    double power = 0.0;
 
     public Shooter(MotorEx motor) {
         shooterMotor = motor;
-//        shooterMotor.setRunMode(Motor.RunMode.RawPower);
-        shooterMotor.setRunMode(Motor.RunMode.VelocityControl);
+        shooterMotor.setRunMode(Motor.RunMode.RawPower);
+//        shooterMotor.setRunMode(Motor.RunMode.VelocityControl);
         shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setInverted(true);
 
     }
 
     // Turn the shooter on/off
-    public void toggleShooter() {
-        if (isOn) {
-            shooterMotor.set(0);
-            isOn = false;
-        } else {
-            shooterMotor.set(1.0); // full power for now
-            isOn = true;
-        }
-    }
+//    public void toggleShooter() {
+//        if (isOn) {
+//            shooterMotor.set(0);
+//            isOn = false;
+//        } else {
+//            shooterMotor.set(1.0); // full power for now
+//            isOn = true;
+//        }
+//    }
 
     // Optional: just turn on
     public void turnOn() {
         shooterMotor.set(1.0);
-        isOn = true;
+//        isOn = true;
     }
 
     // Optional: just turn off
     public void turnOff() {
         shooterMotor.set(0.0);
-        isOn = false;
+//        isOn = false;
     }
 
     // Fake shooting once (for testing)
     public void fireOnce() {
         shooterMotor.set(1.0);
     }
-
     public void setVelocity(double targetVelocity) {
+        this.targetVelocity = targetVelocity;
+        shooterMotor.setVelocity(targetVelocity * 28.0 / 60.0); // ticks/sec
+    }
+
+    public double getVelocity() {
+        return shooterMotor.getVelocity() / 28.0 * 60.0; // RPM
+    }
+
+//    public void setRPM(double targetRPM) {
 //        this.targetRPM = targetRPM;
-//        // Scale RPM to motor power [0,1]  Does this work??
+//
+////        // Scale RPM to motor power [0,1]  Does this work??
 //        double power = targetRPM / 6000.0;
 //        if (power > 1.0) power = 1.0;
 //        if (power < 0.0) power = 0.0;
-//
+////
+////        shooterMotor.set(power);
+////        this.targetVelocity = targetVelocity;
+////        shooterMotor.setVelocity(targetVelocity*28.0/60.0);
 //        shooterMotor.set(power);
-        this.targetVelocity = targetVelocity;
-        shooterMotor.setVelocity(targetVelocity*28.0/60.0);
-
-    }
-
-    public void setRPM(double targetRPM) {
-        this.targetRPM = targetRPM;
-
-//        // Scale RPM to motor power [0,1]  Does this work??
-        double power = targetRPM / 6000.0;
-        if (power > 1.0) power = 1.0;
-        if (power < 0.0) power = 0.0;
 //
-//        shooterMotor.set(power);
-//        this.targetVelocity = targetVelocity;
-//        shooterMotor.setVelocity(targetVelocity*28.0/60.0);
-        shooterMotor.set(power);
-
-    }
+//    }
 
 
-    //Helper methods or as Dave says:  getters???
 
-    public double getVelocity() {
-        return shooterMotor.getVelocity()/28.0*60.0;
-    }
+
 
 
 
@@ -100,12 +92,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean atTargetVelocity() {
-        return Math.abs(getVelocity() - targetVelocity) < 100;
+        return targetVelocity > 0 && Math.abs(getVelocity() - targetVelocity) < 100;
     }
 
-    public boolean isOn() {
-        return isOn;
-    }
+//    public boolean isOn() {
+//        return isOn;
+//    }
 
 }
 

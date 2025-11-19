@@ -24,19 +24,25 @@ public class ShooterSpinupCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        shooterPID.setTolerance(15000);
+        shooterPID.setTolerance(600);
         shooterPID.setSetPoint(targetVelocity);
-        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity()));
     }
 
     @Override
     public void execute() {
-        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity()));
+        shooter.setVelocity(targetVelocity); // RPM directly
+
+//        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity()));
+//        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity(), targetVelocity));
+
     }
 
     @Override
     public boolean isFinished() {
-        return shooterPID.atSetPoint();
+
+        // Otherwise, only finish when shooter reaches near target
+        return shooter.atTargetVelocity();
+//        return shooterPID.atSetPoint();
     }
 
 

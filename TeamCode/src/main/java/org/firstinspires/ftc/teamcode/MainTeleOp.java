@@ -15,6 +15,8 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import com.bylazar.telemetry.TelemetryManager;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
+
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
@@ -56,8 +58,9 @@ public class MainTeleOp extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        double targetVelocity = 4000; //rpm
+        double targetVelocity = 6000; //rpm
 //        double targetRPM = 6000; //rpm
 
         robot.follower.setStartingPose(startPose);
@@ -93,7 +96,7 @@ public class MainTeleOp extends CommandOpMode {
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
-                        new ShooterSpinupCommand(robot.shooter, targetVelocity)
+                        new ShooterSpinupCommand(robot.shooter, 6000.0)
 
 //                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
                 ),
@@ -102,9 +105,13 @@ public class MainTeleOp extends CommandOpMode {
         );
 
 
+//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+//                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
+//                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity))
-                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
+                .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
 
         /* Engage Drive Snail Mode */
 //        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -153,10 +160,11 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading())*100)/100.0);
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
-        telemetry.addData("Shooter Power", robot.shooter.getPower());
-//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+//        telemetry.addData("Shooter Power", robot.shooter.getPower());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+
 //        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
-//        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
+        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 //        telemetry.debug("This should print something on the Panels dashboard!");
 
         telemetryM.update(telemetry);
