@@ -12,13 +12,13 @@ public class ShooterSpinupCommand extends CommandBase {
 
     public static double targetVelocity;
     private final PIDController shooterPID;
-    double kp = 14.0;
+    double kp = 2.0;
     double kd = 0.0;
 
 
-    public ShooterSpinupCommand(Shooter shooter, double targetVelocity) {
+    public ShooterSpinupCommand(Shooter shooter, double cmdTargetVelocity) {
         this.shooter = shooter;
-        this.targetVelocity = targetVelocity;
+        targetVelocity = cmdTargetVelocity;
         shooterPID = new PIDController(kp, 0.0, kd);
     }
 
