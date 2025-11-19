@@ -79,7 +79,7 @@ public class MainTeleOp extends CommandOpMode {
         Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
         intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
 
-        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
+        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.X);
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
 
 //        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
