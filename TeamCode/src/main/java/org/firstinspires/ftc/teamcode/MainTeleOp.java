@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-
+@Configurable
 //@Disabled
 @TeleOp(name="MainTeleOp", group="Competition")
 public class MainTeleOp extends CommandOpMode {
@@ -41,7 +42,8 @@ public class MainTeleOp extends CommandOpMode {
     private Pose autoEndPose = new Pose(0, 0, 0);
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(135));
 
-    private double targetVelocity;
+//    private double targetVelocity;
+    public static double targetVelocity;
 
     @Override
     public void initialize() {
@@ -56,7 +58,7 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        targetVelocity = 3000; //rpm
+        targetVelocity = 4000; //rpm
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
@@ -90,7 +92,7 @@ public class MainTeleOp extends CommandOpMode {
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
-                    new ShooterSpinupCommand(robot.shooter, 3000)
+                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
@@ -125,11 +127,14 @@ public class MainTeleOp extends CommandOpMode {
         // Feeder control
         if (gamepad2.right_trigger > 0.5) {
             robot.feeder.feed();
-//        } else if (gamepad1.left_trigger < 0.5) {
-//            robot.feeder.reverse();
+        } else if (gamepad2.left_trigger > 0.5) {
+            robot.feeder.reverse();
         } else {
             robot.feeder.stop();
         }
+
+        //reverse feeder
+
 
         if (tag != null) {
             telemetry.addLine("Target Tag Detected!");
