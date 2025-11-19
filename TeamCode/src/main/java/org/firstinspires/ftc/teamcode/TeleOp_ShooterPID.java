@@ -55,6 +55,7 @@ public class TeleOp_ShooterPID extends OpMode {
     public void loop() {
 
         currentTime = System.currentTimeMillis();
+
         // Create square wave command between 20%-80% of motor full speed rpm. 10s High and 10s low
         if( (currentTime - prevTime) >= (STEP_DURATION_SEC * 1000) ) {
             switch (nextState) {
