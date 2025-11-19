@@ -21,7 +21,7 @@ public class TeleOp_ShooterPID extends OpMode {
     Shooter_Alternate shooter;
 
     GamepadEx operator;
-    ElapsedTime myTimer;
+    ElapsedTime timer;
 
     static double cmd;
     static double MAX_MOTOR_RPM = 6000;
@@ -31,7 +31,6 @@ public class TeleOp_ShooterPID extends OpMode {
 
     @Override
     public void init() {
-
         MotorEx shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
         operator = new GamepadEx(gamepad2);
         shooter  = new Shooter_Alternate(shooterMotor);
@@ -47,7 +46,7 @@ public class TeleOp_ShooterPID extends OpMode {
 
     @Override
     public void start() {
-//        myTimer.reset();
+        timer.reset();
     }
 
 
@@ -55,15 +54,13 @@ public class TeleOp_ShooterPID extends OpMode {
     public void loop() {
 
         // Create square wave command between 20%-80% of motor full speed rpm. 10s High and 10s low
-//        if(myTimer.seconds() <= 10) {
+        if(timer.seconds() <= 10) {
             cmd = MAX_MOTOR_RPM * 0.80;
-//            shooter.setVelocity(cmd);
-//        } else if(myTimer.seconds() <= 20) {
-//            cmd = MAX_MOTOR_RPM * 0.20;
-//            shooter.setVelocity(cmd);
-//        } else myTimer.reset();
-
-        shooter.setVelocity(cmd);
+            shooter.setVelocity(cmd);
+        } else if(timer.seconds() <= 20) {
+            cmd = MAX_MOTOR_RPM * 0.20;
+            shooter.setVelocity(cmd);
+        } else timer.reset();
 
         // Display on Panels
         tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
