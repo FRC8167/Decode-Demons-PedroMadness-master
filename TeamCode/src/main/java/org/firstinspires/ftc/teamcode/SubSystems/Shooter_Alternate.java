@@ -19,11 +19,11 @@ public class Shooter_Alternate extends SubsystemBase {
 
     /* Public Static for Panels Access */
     public static double targetRPM = 0.0;
-    public static double kV = 0.0;
+    public static double kV = 0.2;
     public static double kP = 0.0;
     public static double kI = 0.0;
     public static double kD = 0.0;
-    public static double pidToleranceRPM = 50.0;
+    public static double pidToleranceRPM = 100.0;
 
 
     public Shooter_Alternate(MotorEx motor) {
@@ -41,7 +41,7 @@ public class Shooter_Alternate extends SubsystemBase {
     @Override
     public void periodic() {
 
-        /* *** These two lines needed for dynamic panels updating *** */
+        /* *** These two lines needed for dynamic updating from panels *** */
         shooterPID.setPIDF(kP, kI, kD, kV);
         shooterPID.setTolerance(rpmToTicksPerSec(pidToleranceRPM));
 

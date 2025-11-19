@@ -8,7 +8,6 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter_Alternate;
@@ -19,11 +18,9 @@ public class TeleOp_ShooterPID extends OpMode {
 
     Shooter_Alternate shooter;
 
-    GamepadEx operator;
-
     static double cmd;
-    static double MAX_MOTOR_RPM = 6000;
-    static long   STEP_DURATION_MS = 10000;
+    static double MAX_MOTOR_RPM     = 6000;
+    static long   STEP_DURATION_SEC = 10;
 
     static TelemetryManager tmPanels;
 
@@ -37,7 +34,6 @@ public class TeleOp_ShooterPID extends OpMode {
     @Override
     public void init() {
         MotorEx shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
-        operator = new GamepadEx(gamepad2);
         shooter  = new Shooter_Alternate(shooterMotor);
         tmPanels = PanelsTelemetry.INSTANCE.getTelemetry();
     }
@@ -60,7 +56,7 @@ public class TeleOp_ShooterPID extends OpMode {
 
         currentTime = System.currentTimeMillis();
         // Create square wave command between 20%-80% of motor full speed rpm. 10s High and 10s low
-        if(currentTime - prevTime >= STEP_DURATION_MS) {
+        if( (currentTime - prevTime) >= (STEP_DURATION_SEC * 1000) ) {
             switch (nextState) {
                 case HIGH:
                     cmd = MAX_MOTOR_RPM * 0.80;
@@ -78,10 +74,10 @@ public class TeleOp_ShooterPID extends OpMode {
 
 
         // Display on Panels
-        tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
         tmPanels.debug("TeleOp Command", cmd);
-        tmPanels.debug("Shooter Target Velocity (RPM)",  shooter.getTargetRPM());
+        tmPanels.debug("Shooter Velocity (RPM)", "%.1f", shooter.getRPM());
         tmPanels.debug("Shooter TPS", "%.1f",            shooter.getTicsPerSec());
+        tmPanels.debug("Shooter at Target ",             shooter.atTargetVelocity());
 
         tmPanels.addData("------- Using addData ", "instead of debug -------");
         tmPanels.addData("Commanded RPM", cmd);
