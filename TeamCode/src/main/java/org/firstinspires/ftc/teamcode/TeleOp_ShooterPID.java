@@ -64,7 +64,7 @@ public class TeleOp_ShooterPID extends OpMode {
                     nextState = State.LOW;
                     break;
 
-                    case LOW:
+                case LOW:
                     cmd = MAX_MOTOR_RPM * 0.20;
                     nextState = State.HIGH;
                     break;
