@@ -82,7 +82,7 @@ public class AutoBlueFar extends CommandOpMode {
 //                new RunCommand(() -> robot.follower.update()),
 //                new WaitCommand(3000),  //replace with shoot command
                 new SequentialCommandGroup(
-                        new ShooterSpinupCommand(robot.shooter, 4000, telemetry),
+                        new ShooterSpinupCommand(robot.shooter, 6000),
                         new InstantCommand(() -> robot.feeder.feed()),
                         new FollowPathCommand(robot.follower, path1, false),  //true hold end
                         new ParallelCommandGroup(
@@ -94,7 +94,7 @@ public class AutoBlueFar extends CommandOpMode {
                         new ParallelCommandGroup(
 
                                 new FollowPathCommand(robot.follower, path3, false),
-                                new ShooterSpinupCommand(robot.shooter, 4000, telemetry)
+                                new ShooterSpinupCommand(robot.shooter, 4000)
                         ),
                         new InstantCommand(() -> robot.feeder.feed()),
                         new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))

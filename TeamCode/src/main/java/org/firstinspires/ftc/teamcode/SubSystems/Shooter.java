@@ -13,8 +13,9 @@ public class Shooter extends SubsystemBase {
 
     // Track shooter state
     public boolean isOn = false;
-//    double targetRPM = 0.0;
+    double targetRPM = 0.0;
     double targetVelocity = 0.0;
+    double power = 0.0;
 
     public Shooter(MotorEx motor) {
         shooterMotor = motor;
@@ -66,12 +67,28 @@ public class Shooter extends SubsystemBase {
 
     }
 
+    public void setRPM(double targetRPM) {
+        this.targetRPM = targetRPM;
+
+//        // Scale RPM to motor power [0,1]  Does this work??
+        double power = targetRPM / 6000.0;
+        if (power > 1.0) power = 1.0;
+        if (power < 0.0) power = 0.0;
+//
+//        shooterMotor.set(power);
+//        this.targetVelocity = targetVelocity;
+//        shooterMotor.setVelocity(targetVelocity*28.0/60.0);
+        shooterMotor.set(power);
+
+    }
+
 
     //Helper methods or as Dave says:  getters???
 
     public double getVelocity() {
         return shooterMotor.getVelocity()/28.0*60.0;
     }
+
 
 
     public double getTargetVelocity() {

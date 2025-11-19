@@ -42,8 +42,7 @@ public class MainTeleOp extends CommandOpMode {
     private Pose autoEndPose = new Pose(0, 0, 0);
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
 
-    private double targetVelocity;
-//    public static double targetVelocity;
+    //    public static double targetVelocity;
 
     @Override
     public void initialize() {
@@ -58,7 +57,7 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        targetVelocity = 4000; //rpm
+        double targetVelocity = 4000; //rpm
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
@@ -92,7 +91,7 @@ public class MainTeleOp extends CommandOpMode {
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToPoseCommand(robot.follower, shootingPose),
-                    new ShooterSpinupCommand(robot.shooter, targetVelocity, telemetry)
+                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
@@ -100,8 +99,8 @@ public class MainTeleOp extends CommandOpMode {
 
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity, telemetry))
-                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0, telemetry));
+                .whenHeld (new ShooterSpinupCommand(robot.shooter, targetVelocity))
+                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
 
         /* Engage Drive Snail Mode */
 //        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
