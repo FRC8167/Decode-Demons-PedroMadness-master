@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -138,22 +139,22 @@ public class MainTeleOp extends CommandOpMode {
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
                 new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new DriveToPoseCommand(robot.follower, shootingPose),
-                                new ShooterSpinupCommand(robot.shooter, shooterRPM)
+                       new ParallelCommandGroup (
+                            new DriveToPoseCommand(robot.follower, shootingPose),
+                            new ShooterSpinupCommand(robot.shooter, shooterRPM)
                         ),
 //                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
 //                        new InstantCommand(robot.feeder::feed),
 //                        new WaitCommand(5000),
 //                        new InstantCommand(robot.feeder::stop),
                         new FeedSequence(robot.feeder),
-                        new InstantCommand(() -> robot.shooter.setVelocity(0) )
+                        new RunCommand(() -> robot.shooter.setVelocity(0) )
                 )
         );
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new InstantCommand(robot.mdrive::enableSnailDrive))
-                .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
+                .whenPressed( new RunCommand(robot.mdrive::enableSnailDrive))
+                .whenReleased(new RunCommand(robot.mdrive::disableSnailDrive));
 
         /* Add driver triggers and other buttons here */
 
