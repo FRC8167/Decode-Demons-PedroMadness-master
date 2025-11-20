@@ -130,18 +130,18 @@ public class MainTeleOp extends CommandOpMode {
 
 //        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
-                new SequentialCommandGroup(
-                       new ParallelCommandGroup (
-                            new DriveToPoseCommand(robot.follower, shootingPose),
-                            new ShooterSpinupCommand(robot.shooter, shooterRPM)
-                        ),
-//                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
-//                        new InstantCommand(robot.feeder::feed),
-//                        new WaitCommand(5000),
-//                        new InstantCommand(robot.feeder::stop),
-                        new FeedSequence(robot.feeder),
-                        new RunCommand(() -> robot.shooter.setVelocity(0) )
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new SequentialCommandGroup(
+                                   new ParallelCommandGroup (
+                                        new DriveToPoseCommand(robot.follower, shootingPose),
+                                        new ShooterSpinupCommand(robot.shooter, shooterRPM)
+                                    ),
+            //                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
+            //                        new InstantCommand(robot.feeder::feed),
+            //                        new WaitCommand(5000),
+            //                        new InstantCommand(robot.feeder::stop),
+                                    new FeedSequence(robot.feeder),
+                                    new RunCommand(() -> robot.shooter.setVelocity(0) )
                 )
         );
 
