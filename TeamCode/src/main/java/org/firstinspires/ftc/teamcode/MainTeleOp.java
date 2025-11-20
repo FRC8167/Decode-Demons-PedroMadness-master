@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,25 +8,20 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.button.Button;
-import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import com.bylazar.telemetry.TelemetryManager;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
-import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -68,7 +62,7 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
-        schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
+        schedule(new DriveCommand(robot.mdrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
 
         driver   = new GamepadEx(gamepad1);
@@ -126,8 +120,8 @@ public class MainTeleOp extends CommandOpMode {
         );
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
-                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+                .whenPressed (new InstantCommand(robot.mdrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
 
         /* Add driver triggers and other buttons here */
 
