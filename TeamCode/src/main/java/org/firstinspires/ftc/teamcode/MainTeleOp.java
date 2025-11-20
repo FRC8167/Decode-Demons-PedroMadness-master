@@ -31,8 +31,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 @TeleOp(name="MainTeleOp", group="Competition")
 public class MainTeleOp extends CommandOpMode {
 
-    public GamepadEx driver;
-    public GamepadEx operator;
+    private GamepadEx driver;
+    private GamepadEx operator;
 
     private final Robot robot = Robot.getInstance();
 
@@ -122,6 +122,43 @@ public class MainTeleOp extends CommandOpMode {
 
 
     /**
+     * Bind commands to driver gamepad buttons
+     */
+    private void bindDriverButtons() {
+
+        driver.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed((new DriveToPoseCommand(robot.follower, shootingPose)));
+
+//        driver.getGamepadButton(GamepadKeys.Button.B).doSomething
+
+//        driver.getGamepadButton(GamepadKeys.Button.X).doSomething
+
+//        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+                new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                                new DriveToPoseCommand(robot.follower, shootingPose),
+                                new ShooterSpinupCommand(robot.shooter, shooterRPM)
+                        ),
+                        new InstantCommand(() -> robot.feeder.feed()),
+                        new WaitCommand(5000),
+                        new InstantCommand(() -> { robot.feeder.stop();
+                            robot.shooter.setVelocity(0); }) //,
+//                        new InstantCommand(() -> robot.shooter.setVelocity(0))
+                )
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new InstantCommand(robot.mdrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
+
+        /* Add driver triggers and other buttons here */
+
+    }
+
+
+    /**
      * Bind commands to the operator gamepad buttons
      */
     private void bindOperatorButtons() {
@@ -151,43 +188,6 @@ public class MainTeleOp extends CommandOpMode {
 //        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 //                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
 //                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
-    }
-
-
-    /**
-     * Bind commands to driver gamepad buttons
-     */
-    private void bindDriverButtons() {
-
-        driver.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed((new DriveToPoseCommand(robot.follower, shootingPose)));
-
-//        driver.getGamepadButton(GamepadKeys.Button.B).doSomething
-
-//        driver.getGamepadButton(GamepadKeys.Button.X).doSomething
-
-//        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
-
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
-                new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new DriveToPoseCommand(robot.follower, shootingPose),
-                                new ShooterSpinupCommand(robot.shooter, shooterRPM)
-                        ),
-                        new InstantCommand(() -> robot.feeder.feed()),
-                        new WaitCommand(5000),
-                        new InstantCommand(() -> { robot.feeder.stop();
-                                                   robot.shooter.setVelocity(0); }) //,
-//                        new InstantCommand(() -> robot.shooter.setVelocity(0))
-                )
-        );
-
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new InstantCommand(robot.mdrive::enableSnailDrive))
-                .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
-
-        /* Add driver triggers and other buttons here */
-
     }
 
 }
