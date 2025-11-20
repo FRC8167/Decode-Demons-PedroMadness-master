@@ -31,23 +31,26 @@ public class MainTeleOp extends CommandOpMode {
 
     public GamepadEx driver;
     public GamepadEx operator;
-    public ElapsedTime timer;
+
     private final Robot robot = Robot.getInstance();
+
     static TelemetryManager telemetryM;
 
-
-    private final Pose startPose = new Pose(24, 24, Math.toRadians(0)); // Test
-    private Pose autoEndPose = new Pose(0, 0, 0);
+    private final Pose startPose    = new Pose(24, 24, Math.toRadians(0)); // Test
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
+    private Pose autoEndPose = new Pose(0, 0, 0);
 
-    //    public static double targetVelocity;
+    private double shooterRPM = 5000;
 
     @Override
     public void initialize() {
+
         // Must have for all opModes
         Robot.OP_MODE_TYPE = Robot.OpModeType.TELEOP;
+
         // Resets the command scheduler
         super.reset();
+
         //Initialize the robot
         try {
             robot.init(hardwareMap);
@@ -56,6 +59,7 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
         double targetVelocity = 6000; //rpm
 //        double targetRPM = 6000; //rpm
 
@@ -63,14 +67,62 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
 
         schedule(new DriveCommand(robot.mdrive, gamepad1));
-        schedule(new VisionCommand(robot.vision));
+//        schedule(new VisionCommand(robot.vision));
 
         driver   = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 
-        double leftTrigger = driver.gamepad.left_trigger;   // range 0.0 to 1.0
-        double rightTrigger = driver.gamepad.right_trigger; // range 0.0 to 1.0
+        bindDriverButtons();
+        bindOperatorButtons();
 
+    }
+
+
+    @Override
+    public void run () {
+
+        super.run();
+
+        robot.follower.update();
+
+        autoEndPose = robot.follower.getPose();
+        AprilTagDetection tag = robot.vision.getFirstTargetTag();
+
+        if (tag != null) {
+            telemetry.addLine("Target Tag Detected!");
+            telemetry.addData("ID", tag.id);
+            telemetry.addData("Center", "(%.0f, %.0f)", tag.center.x, tag.center.y);
+            telemetry.addData("Range (in)", "%.1f", tag.ftcPose.range);
+        } else {
+            telemetry.addLine("No target tags (20–24) detected.");
+        }
+
+        telemetry.addData("Intake State", robot.intake.motorState);
+        telemetry.addData("autoEndPose", autoEndPose.toString());
+        telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX() * 100) / 100.0);
+        telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY() * 100) / 100.0);
+        telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading()) * 100) / 100.0);
+        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
+
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
+
+        telemetryM.update(telemetry);
+    }
+
+
+    @Override
+    public void end () {
+        autoEndPose = robot.follower.getPose();
+    }
+
+
+    public Pose getAutoEndPose () {
+        return autoEndPose;
+    }
+
+
+    private void bindOperatorButtons() {
 
         /* ************************** Operator Button Bindings ************************** */
 
@@ -98,8 +150,11 @@ public class MainTeleOp extends CommandOpMode {
 //        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 //                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
 //                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+    }
 
-        /* ************************** Operator Button Bindings ************************** */
+
+    private void bindDriverButtons() {
+
         driver.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed((new DriveToPoseCommand(robot.follower, shootingPose)));
 
@@ -111,91 +166,23 @@ public class MainTeleOp extends CommandOpMode {
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
                 new SequentialCommandGroup(
-                    new ParallelCommandGroup(
-                        new DriveToPoseCommand(robot.follower, shootingPose),
-                        new ShooterSpinupCommand(robot.shooter, 6000.0)
-                    ),
-                    new FeederToggleForwardCommand(robot.feeder)
+                        new ParallelCommandGroup(
+                                new DriveToPoseCommand(robot.follower, shootingPose),
+                                new ShooterSpinupCommand(robot.shooter, shooterRPM)
+                        ),
+                        new FeederToggleForwardCommand(robot.feeder)
                 )
         );
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed (new InstantCommand(robot.mdrive::enableSnailDrive))
+                .whenPressed(new InstantCommand(robot.mdrive::enableSnailDrive))
                 .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
 
         /* Add driver triggers and other buttons here */
 
     }
 
-
-    @Override
-    public void run() {
-        super.run();
-        robot.follower.update();
-        autoEndPose = robot.follower.getPose();
-        AprilTagDetection tag = robot.vision.getFirstTargetTag();
-
-        // Feeder control
-        if (gamepad2.right_trigger > 0.5) {
-            robot.feeder.feed();
-        } else if (gamepad2.left_trigger > 0.5) {
-            robot.feeder.reverse();
-        } else {
-            robot.feeder.stop();
-        }
-
-        //reverse feeder
-
-
-        if (tag != null) {
-            telemetry.addLine("Target Tag Detected!");
-            telemetry.addData("ID", tag.id);
-            telemetry.addData("Center", "(%.0f, %.0f)", tag.center.x, tag.center.y);
-            telemetry.addData("Range (in)", "%.1f", tag.ftcPose.range);
-        } else {
-            telemetry.addLine("No target tags (20–24) detected.");
-        }
-
-        telemetry.addData("Intake State", robot.intake.motorState);
-        telemetry.addData("autoEndPose", autoEndPose.toString());
-        telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX()*100)/100.0);
-        telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY()*100)/100.0);
-        telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading())*100)/100.0);
-        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
-
-//        telemetry.addData("Shooter Power", robot.shooter.getPower());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
-
-//        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
-        telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
-//        telemetry.debug("This should print something on the Panels dashboard!");
-
-        telemetryM.update(telemetry);
-//        telemetry.update();
-    }
-
-//        if (gamepad1.left_bumper) {
-//                vision.scanForAprilTags();
-//                if (vision.getFirstTargetTag().id == 20 || vision.getFirstTargetTag().id == 24) {
-//                    shooter.setShooterVelocity(vision.getDistanceToGoal());
-//                    telemetry.addData("Distance to Goal", vision.getDistanceToGoal());
-//                    telemetry.addData("Shooter Target (tps)", shooter.getLaunchVelocity(vision.getDistanceToGoal()));
-//                }
-
-
-
-    @Override
-    public void end() {
-        autoEndPose = robot.follower.getPose();
-    }
-
-    public Pose getAutoEndPose() {
-        return autoEndPose;
-        }
-
-
-    }
-
+}
 
 
 
