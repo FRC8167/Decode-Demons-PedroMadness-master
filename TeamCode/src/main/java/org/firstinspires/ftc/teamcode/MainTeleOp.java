@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -18,13 +17,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeedSequence;
-import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
-
-import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
-import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
-
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
