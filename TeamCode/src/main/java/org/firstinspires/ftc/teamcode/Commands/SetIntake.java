@@ -13,9 +13,6 @@ public class SetIntake extends CommandBase {
     public SetIntake(Intake intake, Intake.MotorState motorState) {
         this.intake = intake;
         this.motorState = motorState;
-//        this.telemetry = telemetry;
-
-
 
         addRequirements(intake);
     }
@@ -23,12 +20,12 @@ public class SetIntake extends CommandBase {
     @Override
     public void initialize() {
         timer.reset();
-        intake.setMotorState(motorState);
+        intake.setIntakeState(motorState);
     }
 
     @Override
     public void execute() {
-        intake.setIntakeState();
+        super.execute();
     }
 
 
