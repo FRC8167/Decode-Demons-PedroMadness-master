@@ -7,16 +7,8 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends SubsystemBase{
-//    private final Robot robot = Robot.getInstance();
+
     private final MotorEx intakeMotor;
-
-
-    public Intake(MotorEx motor) {
-        intakeMotor = motor;
-        intakeMotor.setRunMode(Motor.RunMode.RawPower);
-        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-
-    }
 
     public enum MotorState {
         REVERSE,
@@ -24,15 +16,19 @@ public class Intake extends SubsystemBase{
         FORWARD,
         PASSIVE
     }
+    public MotorState motorState = MotorState.STOP;
 
     public static double INTAKE_FORWARD_SPEED = 1.0;
     public static double INTAKE_REVERSE_SPEED = -0.5; // unused
     public static double INTAKE_PASSIVE_SPEED = 0.2;
-    public MotorState motorState = MotorState.STOP;
 
-    public void init() {
-        //TODO
+
+    public Intake(MotorEx motor) {
+        intakeMotor = motor;
+        intakeMotor.setRunMode(Motor.RunMode.RawPower);
+        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
     }
+
 
     public void setMotorState(MotorState motorState) {
         this.motorState = motorState;

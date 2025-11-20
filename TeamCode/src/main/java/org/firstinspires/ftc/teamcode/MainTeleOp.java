@@ -20,12 +20,14 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -75,55 +77,62 @@ public class MainTeleOp extends CommandOpMode {
         double leftTrigger = driver.gamepad.left_trigger;   // range 0.0 to 1.0
         double rightTrigger = driver.gamepad.right_trigger; // range 0.0 to 1.0
 
-        //Intake Button Bindings
-        Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
-        intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
 
-        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.X);
-        intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
+        /* ************************** Operator Button Bindings ************************** */
 
-//        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
-//        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
+        operator.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed((new ToggleForwardCommand(robot.intake)));
 
-//        Shooter Button Bindings
-//        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
-//        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
+        operator.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new ToggleReverseCommand(robot.intake));
 
-        Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
-        driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose));
+//        operator.getGamepadButton(GamepadKeys.Button.X).doSomething
 
-        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
-        shootSequenceButton.whenPressed(new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    new DriveToPoseCommand(robot.follower, shootingPose),
-                        new ShooterSpinupCommand(robot.shooter, 6000.0)
+//        operator.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
-//                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
-                ),
-                new FeederToggleForwardCommand(robot.feeder)
-            )
-        );
-
-
-//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
-//                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+//        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).doSomething;
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
                 .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
 
-        /* Engage Drive Snail Mode */
-//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
-//                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+        /* Add operator triggers and other buttons here */
 
-        /* Drive Field Centric (Need to add command DriveFieldCentric) */
-        /*driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed (new DriveFieldCentric(robot.mecanumDrive, gamepad1, robot.follower.getHeading());
-         */
+//        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
+//        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
+
+//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+//                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
+//                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
+
+        /* ************************** Operator Button Bindings ************************** */
+        driver.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed((new DriveToPoseCommand(robot.follower, shootingPose)));
+
+//        driver.getGamepadButton(GamepadKeys.Button.B).doSomething
+
+//        driver.getGamepadButton(GamepadKeys.Button.X).doSomething
+
+//        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+                new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                        new DriveToPoseCommand(robot.follower, shootingPose),
+                        new ShooterSpinupCommand(robot.shooter, 6000.0)
+                    ),
+                    new FeederToggleForwardCommand(robot.feeder)
+                )
+        );
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
+
+        /* Add driver triggers and other buttons here */
 
     }
+
 
     @Override
     public void run() {
