@@ -8,6 +8,7 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -102,7 +103,7 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("FollowerH", "%.1f",Math.toDegrees(robot.follower.getPose().getHeading()));
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
-        telemetry.addData("Shooter Velocity (RPM)", "%.1f", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Velocity (RPM)", "%.1f", robot.shooter.getRPM());
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
         telemetryM.update(telemetry);
@@ -139,8 +140,8 @@ public class MainTeleOp extends CommandOpMode {
 //        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).doSomething;
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
-                .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
+                .whenHeld(new InstantCommand(() -> robot.shooter.setVelocity(shooterRPM)))
+                .whenReleased(new InstantCommand(() -> robot.shooter.setVelocity(0)));
 
         /* Add operator triggers and other buttons here */
 
@@ -173,7 +174,10 @@ public class MainTeleOp extends CommandOpMode {
                                 new DriveToPoseCommand(robot.follower, shootingPose),
                                 new ShooterSpinupCommand(robot.shooter, shooterRPM)
                         ),
-                        new FeederToggleForwardCommand(robot.feeder)
+                        new InstantCommand(() -> robot.feeder.feed()),
+                        new WaitCommand(5000),
+                        new InstantCommand(() -> robot.feeder.stop()),
+                        new InstantCommand(() -> robot.shooter.setVelocity(0))
                 )
         );
 

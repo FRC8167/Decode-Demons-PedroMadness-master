@@ -5,49 +5,38 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
+import org.firstinspires.ftc.teamcode.SubSystems.Shooter_Alternate;
+
 @Configurable
 public class ShooterSpinupCommand extends CommandBase {
 
-    private final Shooter shooter;
+    private final Shooter_Alternate shooter;
 
     public static double targetVelocity;
-    private final PIDController shooterPID;
-    double kp = 14.0;
-    double kd = 0.0;
 
 
-    public ShooterSpinupCommand(Shooter shooter, double cmdTargetVelocity) {
+    public ShooterSpinupCommand(Shooter_Alternate shooter, double cmdTargetVelocity) {
         this.shooter = shooter;
         targetVelocity = cmdTargetVelocity;
-        shooterPID = new PIDController(kp, 0.0, kd);
+        addRequirements(shooter);
     }
+
 
     @Override
     public void initialize() {
-        shooterPID.setTolerance(600);
-        shooterPID.setSetPoint(targetVelocity);
+        shooter.setVelocity(targetVelocity);
     }
+
 
     @Override
     public void execute() {
-        shooter.setVelocity(targetVelocity); // RPM directly
-
-//        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity()));
-//        shooter.setVelocity(shooterPID.calculate(shooter.getVelocity(), targetVelocity));
-
+        super.execute();
     }
+
 
     @Override
     public boolean isFinished() {
-
-        // Otherwise, only finish when shooter reaches near target
         return shooter.atTargetVelocity();
-//        return shooterPID.atSetPoint();
     }
 
-
-    @Override
-    public void end(boolean interrupted) {
-//        shooter.turnOff();
-    }
 }

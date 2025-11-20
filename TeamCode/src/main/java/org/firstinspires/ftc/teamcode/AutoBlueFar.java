@@ -89,7 +89,7 @@ public class AutoBlueFar extends CommandOpMode {
                         new InstantCommand(() -> robot.feeder.stop()),
                         new ParallelCommandGroup(
                                 new FollowPathCommand(robot.follower, path2, false),
-                                new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
+                                new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD))
                         ),
 
 
@@ -99,7 +99,7 @@ public class AutoBlueFar extends CommandOpMode {
                                 new ShooterSpinupCommand(robot.shooter, 4000)
                         ),
                         new InstantCommand(() -> robot.feeder.feed()),
-                        new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
+                        new InstantCommand(()->robot.intake.setIntakeState(Intake.MotorState.STOP))
 
                 )
         );

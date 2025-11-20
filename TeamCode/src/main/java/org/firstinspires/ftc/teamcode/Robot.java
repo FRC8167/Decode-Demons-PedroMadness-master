@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
+import org.firstinspires.ftc.teamcode.SubSystems.Shooter_Alternate;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -42,7 +43,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     protected MecanumDrive mdrive;
     protected Intake intake;
-    protected Shooter shooter;
+    protected Shooter_Alternate shooter;
     protected SensorColor colorSensor;
     protected Vision vision;
     protected Feeder feeder;
@@ -74,7 +75,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         mdrive  = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake  = new Intake(intakeMotor);
         feeder  = new Feeder(feederServoLeft, feederServoRight);
-        shooter = new Shooter(shooterMotor);
+        shooter = new Shooter_Alternate(shooterMotor);
         vision  = new Vision(webCam1);
 
 
