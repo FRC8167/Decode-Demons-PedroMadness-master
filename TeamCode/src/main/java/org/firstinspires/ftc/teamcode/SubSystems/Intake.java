@@ -34,6 +34,7 @@ public class Intake extends SubsystemBase{
         this.motorState = motorState;
     }
 
+
     public void setIntakeState() {
        switch (motorState) {
                 case FORWARD:
@@ -72,11 +73,10 @@ public class Intake extends SubsystemBase{
         setIntakeState();
     }
 
+
     @Override
     public void periodic() {
-        setIntakeState();
-
-
+        super.periodic();
     }
 }
 
