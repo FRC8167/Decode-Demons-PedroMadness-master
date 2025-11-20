@@ -16,6 +16,7 @@ import com.bylazar.telemetry.TelemetryManager;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
+import org.firstinspires.ftc.teamcode.Commands.FeedSequence;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 
@@ -141,11 +142,12 @@ public class MainTeleOp extends CommandOpMode {
                                 new DriveToPoseCommand(robot.follower, shootingPose),
                                 new ShooterSpinupCommand(robot.shooter, shooterRPM)
                         ),
-                        new InstantCommand(() -> robot.feeder.feed()),
-                        new WaitCommand(5000),
-                        new InstantCommand(() -> { robot.feeder.stop();
-                            robot.shooter.setVelocity(0); }) //,
-//                        new InstantCommand(() -> robot.shooter.setVelocity(0))
+//                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
+//                        new InstantCommand(robot.feeder::feed),
+//                        new WaitCommand(5000),
+//                        new InstantCommand(robot.feeder::stop),
+                        new FeedSequence(robot.feeder),
+                        new InstantCommand(() -> robot.shooter.setVelocity(0) )
                 )
         );
 
