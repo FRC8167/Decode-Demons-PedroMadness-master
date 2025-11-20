@@ -40,7 +40,8 @@ public class MainTeleOp extends CommandOpMode {
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
     private Pose autoEndPose = new Pose(0, 0, 0);
 
-    private double shooterRPM = 5000;
+    private final double shooterRPM = 5000;
+
 
     @Override
     public void initialize() {
@@ -58,11 +59,6 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
-        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-
-        double targetVelocity = 6000; //rpm
-//        double targetRPM = 6000; //rpm
-
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
@@ -71,9 +67,10 @@ public class MainTeleOp extends CommandOpMode {
 
         driver   = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
-
         bindDriverButtons();
         bindOperatorButtons();
+
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
     }
 
@@ -81,7 +78,7 @@ public class MainTeleOp extends CommandOpMode {
     @Override
     public void run () {
 
-        super.run();
+        super.run();                    // Gets Command Scheduler Instance
 
         robot.follower.update();
 
@@ -122,9 +119,10 @@ public class MainTeleOp extends CommandOpMode {
     }
 
 
+    /**
+     * Bind commands to the operator gamepad buttons
+     */
     private void bindOperatorButtons() {
-
-        /* ************************** Operator Button Bindings ************************** */
 
         operator.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed((new ToggleForwardCommand(robot.intake)));
@@ -153,6 +151,9 @@ public class MainTeleOp extends CommandOpMode {
     }
 
 
+    /**
+     * Bind commands to driver gamepad buttons
+     */
     private void bindDriverButtons() {
 
         driver.getGamepadButton(GamepadKeys.Button.A)
