@@ -34,7 +34,7 @@ public class Shooter_Alternate extends SubsystemBase {
         shooterPID = new PIDFController(kP, kI, kD, kV);
         shooterPID.setTolerance(rpmToTicksPerSec(50));
 
-        shooterMotor.setVelocity(0);
+        setVelocity(0.0);
     }
 
 
