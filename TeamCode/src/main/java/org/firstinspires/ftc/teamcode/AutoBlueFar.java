@@ -30,6 +30,7 @@ public class AutoBlueFar extends CommandOpMode {
     private final Pose collectGPPPose = new Pose(20, 36, Math.toRadians(180));
     private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-70));
 
+    private SequentialCommandGroup autoSequence;
 
     private PathChain path1, path2, path3;
 
@@ -67,9 +68,9 @@ public class AutoBlueFar extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-//        robot.follower = Constants.createFollower(hardwareMap);
-        buildPaths();
 
+        buildPaths();
+        buildAutoSequence();
 
     }
 
@@ -77,34 +78,7 @@ public class AutoBlueFar extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        schedule(
-                // DO NOT REMOVE: updates follower to follow path
-//                new RunCommand(() -> robot.follower.update()),
-//                new WaitCommand(3000),  //replace with shoot command
-                new SequentialCommandGroup(
-                        new ShooterSpinupCommand(robot.shooter, 4000),
-                        new InstantCommand(() -> robot.feeder.feed()),
-                        new FollowPathCommand(robot.follower, path1, false),  //true hold end
-                        new WaitCommand(2000),
-                        new InstantCommand(() -> robot.feeder.stop()),
-                        new ParallelCommandGroup(
-                                new FollowPathCommand(robot.follower, path2, false),
-                                new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD))
-                        ),
-
-
-                        new ParallelCommandGroup(
-
-                                new FollowPathCommand(robot.follower, path3, false),
-                                new ShooterSpinupCommand(robot.shooter, 4000)
-                        ),
-                        new InstantCommand(() -> robot.feeder.feed()),
-                        new WaitCommand(2000),
-                        new InstantCommand(() -> { robot.intake.setIntakeState(Intake.MotorState.STOP);
-                                                    robot.feeder.stop();})
-
-                )
-        );
+        schedule( autoSequence );
 
         robot.follower.update();
         robot.follower.getPose();
@@ -117,8 +91,33 @@ public class AutoBlueFar extends CommandOpMode {
     }
 
     @Override
-    public void end() {}
+    public void end() { super.end();}
 
+
+    public void buildAutoSequence() {
+        autoSequence =
+                new SequentialCommandGroup(
+                    new ShooterSpinupCommand(robot.shooter, 4000),
+                    new InstantCommand(() -> robot.feeder.feed()),
+                    new FollowPathCommand(robot.follower, path1, false),  //true hold end
+                    new WaitCommand(2000),
+                    new InstantCommand(() -> robot.feeder.stop()),
+                    new ParallelCommandGroup(
+                            new FollowPathCommand(robot.follower, path2, false),
+                            new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD))
+                    ),
+
+                    new ParallelCommandGroup(
+                            new FollowPathCommand(robot.follower, path3, false),
+                            new ShooterSpinupCommand(robot.shooter, 4000)
+                    ),
+                    new InstantCommand(() -> robot.feeder.feed()),
+                    new WaitCommand(2000),
+                    new InstantCommand(() -> { robot.intake.setIntakeState(Intake.MotorState.STOP);
+                        robot.feeder.stop();})
+
+        );
+    }
 
 }
 
