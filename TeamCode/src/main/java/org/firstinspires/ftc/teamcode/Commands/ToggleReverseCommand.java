@@ -14,7 +14,7 @@ public class ToggleReverseCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        intake.toggleReverse();
+        intake.setIntakeState(Intake.MotorState.REVERSE);
     }
 
     @Override
