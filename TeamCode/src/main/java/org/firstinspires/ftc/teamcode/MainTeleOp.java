@@ -176,8 +176,9 @@ public class MainTeleOp extends CommandOpMode {
                         ),
                         new InstantCommand(() -> robot.feeder.feed()),
                         new WaitCommand(5000),
-                        new InstantCommand(() -> robot.feeder.stop()),
-                        new InstantCommand(() -> robot.shooter.setVelocity(0))
+                        new InstantCommand(() -> { robot.feeder.stop();
+                                                   robot.shooter.setVelocity(0); }) //,
+//                        new InstantCommand(() -> robot.shooter.setVelocity(0))
                 )
         );
 
