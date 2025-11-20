@@ -16,7 +16,14 @@ public class Intake extends SubsystemBase{
         FORWARD,
         PASSIVE
     }
-    public MotorState motorState = MotorState.STOP;
+    private MotorState motorState = MotorState.STOP;
+
+//    public enum Direction {
+//        FORWARD,
+//        REVERSE
+//    }
+//    Direction direction = Direction.FORWARD;
+
 
     public static double INTAKE_FORWARD_SPEED = 1.0;
     public static double INTAKE_REVERSE_SPEED = -0.5; // unused
@@ -30,49 +37,27 @@ public class Intake extends SubsystemBase{
     }
 
 
-    public void setMotorState(MotorState motorState) {
-        this.motorState = motorState;
+    public void setIntakeState(MotorState intakeState) {
+        motorState = intakeState;
+
+        switch (motorState) {
+            case FORWARD:
+                intakeMotor.set(INTAKE_FORWARD_SPEED);
+                break;
+            case REVERSE:
+                intakeMotor.set(INTAKE_REVERSE_SPEED);
+                break;
+            case PASSIVE:
+                intakeMotor.set(INTAKE_PASSIVE_SPEED);
+                break;
+            case STOP:
+                intakeMotor.set(0.0);
+                break;
+        }
     }
 
 
-    public void setIntakeState() {
-       switch (motorState) {
-                case FORWARD:
-                    intakeMotor.set(INTAKE_FORWARD_SPEED);
-                    break;
-                case REVERSE:
-                    intakeMotor.set(INTAKE_REVERSE_SPEED);
-                    break;
-                case PASSIVE:
-                    intakeMotor.set(INTAKE_PASSIVE_SPEED);
-                    break;
-                case STOP:
-                    default:
-                        intakeMotor.set(0.0);
-                        break;
-            }
-        }
-
-
-    public void toggleForward() {
-            if (motorState.equals(MotorState.FORWARD)) {
-                setMotorState(MotorState.STOP);
-            } else {
-                setMotorState(MotorState.FORWARD);
-            }
-            setIntakeState();
-        }
-
-    /** Toggle between REVERSE and STOP */
-    public void toggleReverse() {
-        if (motorState == MotorState.REVERSE) {
-            setMotorState(MotorState.STOP);
-        } else {
-            setMotorState(MotorState.REVERSE);
-        }
-        setIntakeState();
-    }
-
+    public MotorState getIntakeState() { return motorState; }
 
     @Override
     public void periodic() {

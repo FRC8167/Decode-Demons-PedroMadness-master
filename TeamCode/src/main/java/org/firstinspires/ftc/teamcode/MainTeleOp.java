@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
 
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -94,14 +95,14 @@ public class MainTeleOp extends CommandOpMode {
             telemetry.addLine("No target tags (20–24) detected.");
         }
 
-        telemetry.addData("Intake State", robot.intake.motorState);
+        telemetry.addData("Intake State", robot.intake.getIntakeState());
         telemetry.addData("autoEndPose", autoEndPose.toString());
-        telemetry.addData("FollowerX", Math.round(robot.follower.getPose().getX() * 100) / 100.0);
-        telemetry.addData("FollowerY", Math.round(robot.follower.getPose().getY() * 100) / 100.0);
-        telemetry.addData("FollowerH", Math.round(Math.toDegrees(robot.follower.getPose().getHeading()) * 100) / 100.0);
+        telemetry.addData("FollowerX", "%.2f", robot.follower.getPose().getX() );
+        telemetry.addData("FollowerY", "%.2f", robot.follower.getPose().getY() );
+        telemetry.addData("FollowerH", "%.1f",Math.toDegrees(robot.follower.getPose().getHeading()));
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Velocity (RPM)", "%.1f", robot.shooter.getVelocity());
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
         telemetryM.update(telemetry);
@@ -125,12 +126,13 @@ public class MainTeleOp extends CommandOpMode {
     private void bindOperatorButtons() {
 
         operator.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed((new ToggleForwardCommand(robot.intake)));
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.STOP)));
 
         operator.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new ToggleReverseCommand(robot.intake));
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.REVERSE)));
 
-//        operator.getGamepadButton(GamepadKeys.Button.X).doSomething
+        operator.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD)));
 
 //        operator.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
