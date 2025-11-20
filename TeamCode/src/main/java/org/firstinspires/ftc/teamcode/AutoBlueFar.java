@@ -82,7 +82,7 @@ public class AutoBlueFar extends CommandOpMode {
 //                new RunCommand(() -> robot.follower.update()),
 //                new WaitCommand(3000),  //replace with shoot command
                 new SequentialCommandGroup(
-                        new ShooterSpinupCommand(robot.shooter, 6000),
+                        new ShooterSpinupCommand(robot.shooter, 4000),
                         new InstantCommand(() -> robot.feeder.feed()),
                         new FollowPathCommand(robot.follower, path1, false),  //true hold end
                         new WaitCommand(2000),
@@ -99,7 +99,9 @@ public class AutoBlueFar extends CommandOpMode {
                                 new ShooterSpinupCommand(robot.shooter, 4000)
                         ),
                         new InstantCommand(() -> robot.feeder.feed()),
-                        new InstantCommand(()->robot.intake.setIntakeState(Intake.MotorState.STOP))
+                        new WaitCommand(2000),
+                        new InstantCommand(() -> { robot.intake.setIntakeState(Intake.MotorState.STOP);
+                                                    robot.feeder.stop();})
 
                 )
         );
@@ -110,7 +112,7 @@ public class AutoBlueFar extends CommandOpMode {
         telemetry.addData("X:  ", robot.follower.getPose().getX());
         telemetry.addData("Y:  ", robot.follower.getPose().getY());
         telemetry.addData("Theta:  ", robot.follower.getPose().getHeading());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
         telemetry.update();
     }
 
