@@ -22,9 +22,6 @@ public class MecanumDrive extends SubsystemBase {
     private final double DEGRADE_AUTHORITY = 0.35;
     private final double MAX_AUTHORITY = 0.85;
 
-    private enum DriveModes { ROBO_CENTRIC, FIELD_CENTRIC, CONSTANT_HEADING }
-    private DriveModes driveMode = DriveModes.ROBO_CENTRIC;
-
 
     /**
      *
@@ -53,8 +50,6 @@ public class MecanumDrive extends SubsystemBase {
         backRight.setRunMode(Motor.RunMode.RawPower);
 
         controlAuthority = MAX_AUTHORITY;
-
-        driveMode = DriveModes.ROBO_CENTRIC;
 
         // Initialize motors
         setMotorPower(0, 0, 0, 0);
