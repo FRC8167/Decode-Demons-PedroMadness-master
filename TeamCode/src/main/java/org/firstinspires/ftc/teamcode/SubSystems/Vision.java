@@ -28,8 +28,6 @@ public class Vision extends SubsystemBase {
 
     /* --- Target Tag IDs we care about --- */
     private final int[] TARGET_TAGS = {20, 21, 22, 23, 24};
-    private final int BLUE_GOAL = 20;
-    private final int RED_GOAL = 24;
 
     /* Camera settings */
     private long CAMERA_EXPOSURE = 6;    // milliseconds

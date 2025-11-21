@@ -56,7 +56,7 @@ public class MainTeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
-        /* For Vision algorithm development when no AutoOp is being run */
+        /* For Vision algorithm development when no AutoOp is being run first */
         if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
 
         robot.follower.setStartingPose(startPose);
