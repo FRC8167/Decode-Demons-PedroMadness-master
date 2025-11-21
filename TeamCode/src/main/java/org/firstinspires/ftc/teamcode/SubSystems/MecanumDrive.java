@@ -16,15 +16,28 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
  */
 public class MecanumDrive extends SubsystemBase {
 
+    private final Robot robot = Robot.getInstance();
+
     private final MotorEx frontLeft, backLeft, frontRight, backRight;
     //    private boolean degradedMode = false;
     private double controlAuthority;
     private final double DEGRADE_AUTHORITY = 0.35;
     private final double MAX_AUTHORITY = 0.85;
 
-//    private enum Modes { ROBO_CENTRIC, FIELD_CENTRIC, CONSTANT_HEADING }
-//    private Modes mode = Modes.ROBO_CENTRIC;
+    public enum DriveModes { ROBO_CENTRIC, FIELD_CENTRIC, CONSTANT_HEADING }
+    private DriveModes driveMode = DriveModes.ROBO_CENTRIC;
 
+    private double currentHeading;
+    private double targetHeadingDeg;
+
+
+    /**
+     *
+     * @param leftFront
+     * @param leftRear
+     * @param rightFront
+     * @param rightRear
+     */
     public MecanumDrive(MotorEx leftFront, MotorEx leftRear, MotorEx rightFront, MotorEx rightRear) {
 
         this.frontLeft = leftFront;
@@ -37,7 +50,6 @@ public class MecanumDrive extends SubsystemBase {
         backLeft.setInverted(true);
         frontRight.setInverted(false);
         backRight.setInverted(false);
-        ;
 
         frontRight.setRunMode(Motor.RunMode.RawPower);
         frontLeft.setRunMode(Motor.RunMode.RawPower);
@@ -45,6 +57,8 @@ public class MecanumDrive extends SubsystemBase {
         backRight.setRunMode(Motor.RunMode.RawPower);
 
         controlAuthority = MAX_AUTHORITY;
+
+        driveMode = DriveModes.ROBO_CENTRIC;
 
         // Initialize motors
         setMotorPower(0, 0, 0, 0);
@@ -141,7 +155,7 @@ public class MecanumDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        super.periodic();
+        currentHeading = robot.follower.getHeading();
     }
 
 
@@ -149,11 +163,36 @@ public class MecanumDrive extends SubsystemBase {
         controlAuthority = DEGRADE_AUTHORITY;
     }
 
+
     public void disableSnailDrive() {
         controlAuthority = MAX_AUTHORITY;
     }
 
+
     public double getControlAuthority() {
         return controlAuthority;
     }
+
+
+    public void setDriveMode(DriveModes mode) {
+        driveMode = mode;
+    }
+
+
+    public DriveModes getDriveMode() {
+        return driveMode;
+    }
+
+
+    public void setTargetHeading(double tagetHeadingDegrees) {
+        targetHeadingDeg = tagetHeadingDegrees;
+    }
+
+
+    public double getTargetHeadingDeg() {
+        return targetHeadingDeg;
+    }
+
+
+
 }
