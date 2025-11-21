@@ -34,6 +34,13 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         TELEOP
     }
 
+    public enum AllianceColor {
+        RED,
+        BLUE,
+        UNKNOWN
+    }
+    private AllianceColor alliance;
+
     public Telemetry telemetry;
 
     public static OpModeType OP_MODE_TYPE;
@@ -85,6 +92,15 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         if (OP_MODE_TYPE.equals(OpModeType.AUTO)) {
             initHasMovement();
         }
+    }
+
+
+    public void setAlliance(AllianceColor alliance) {
+        this.alliance = alliance;
+    }
+
+    public AllianceColor getAlliance() {
+        return alliance;
     }
 
     public void initHasMovement() {

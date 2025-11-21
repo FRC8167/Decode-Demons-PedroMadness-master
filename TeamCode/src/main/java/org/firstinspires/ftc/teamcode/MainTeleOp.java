@@ -43,11 +43,11 @@ public class MainTeleOp extends CommandOpMode {
     @Override
     public void initialize() {
 
-        // Must have for all opModes
-        Robot.OP_MODE_TYPE = Robot.OpModeType.TELEOP;
-
         // Resets the command scheduler
         super.reset();
+
+        // Must have for all opModes
+        Robot.OP_MODE_TYPE = Robot.OpModeType.TELEOP;
 
         //Initialize the robot
         try {
@@ -55,6 +55,9 @@ public class MainTeleOp extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        /* For Vision algorithm development when no AutoOp is being run */
+        if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
 
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
@@ -80,23 +83,23 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
 
         autoEndPose = robot.follower.getPose();
-        AprilTagDetection tag = robot.vision.getFirstTargetTag();
+//        AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
-        if (tag != null) {
-            telemetry.addLine("Target Tag Detected!");
-            telemetry.addData("ID", tag.id);
-            telemetry.addData("Center", "(%.0f, %.0f)", tag.center.x, tag.center.y);
-            telemetry.addData("Range (in)", "%.1f", tag.ftcPose.range);
-        } else {
-            telemetry.addLine("No target tags (20–24) detected.");
-        }
+//        if (tag != null) {
+//            telemetry.addLine("Target Tag Detected!");
+//            telemetry.addData("ID", tag.id);
+//            telemetry.addData("Center", "(%.0f, %.0f)", tag.center.x, tag.center.y);
+//            telemetry.addData("Range (in)", "%.1f", tag.ftcPose.range);
+//        } else {
+//            telemetry.addLine("No target tags (20–24) detected.");
+//        }
 
         telemetry.addData("Intake State", robot.intake.getIntakeState());
         telemetry.addData("autoEndPose", autoEndPose.toString());
         telemetry.addData("FollowerX", "%.2f", robot.follower.getPose().getX() );
         telemetry.addData("FollowerY", "%.2f", robot.follower.getPose().getY() );
         telemetry.addData("FollowerH", "%.1f",Math.toDegrees(robot.follower.getPose().getHeading()));
-        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
+//        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
         telemetry.addData("Shooter Velocity (RPM)", "%.1f", robot.shooter.getRPM());
         telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
@@ -160,21 +163,21 @@ public class MainTeleOp extends CommandOpMode {
     private void bindOperatorButtons() {
 
         operator.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.STOP)));
+                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.STOP)));
 
         operator.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.REVERSE)));
+                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.REVERSE)));
 
         operator.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD)));
+                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD)));
 
 //        operator.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
 //        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).doSomething;
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld(new InstantCommand(() -> robot.shooter.setVelocity(shooterRPM)))
-                .whenReleased(new InstantCommand(() -> robot.shooter.setVelocity(0)));
+                .whenHeld(new RunCommand(() -> robot.shooter.setVelocity(shooterRPM)))
+                .whenReleased(new RunCommand(() -> robot.shooter.setVelocity(0)));
 
         /* Add operator triggers and other buttons here */
 
