@@ -148,7 +148,7 @@ public class MainTeleOp extends CommandOpMode {
 //        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new RunCommand(() -> { robot.mdrive.setTargetHeading(20);
+                .whenPressed(new RunCommand(() -> { robot.mdrive.setTargetHeading(20);      // Change this April Tag Bearing when ready
                                                     robot.mdrive.setDriveMode(MecanumDrive.DriveModes.CONSTANT_HEADING);
                                                   } ))
                 .whenReleased(new RunCommand(() -> robot.mdrive.setDriveMode(MecanumDrive.DriveModes.ROBO_CENTRIC) ));
