@@ -15,11 +15,11 @@ public class ShooterSubsystemTest extends SubsystemBase {
 
         //Panels Configurables
         public static double targetRPM = 0.0;
-        public static double kv = 0.2;
+        public static double kv = 5.0;
         public static double kp = 0.0;
         public static double ki = 0.0;  //is this even ever used????
         public static double kd = 0.0;
-        public static double tolerance= 50.0;  //RPM
+        public static double tolerance= 800.0;  //RPM
 
         public ShooterSubsystemTest(MotorEx motor) {
             shooterMotor = motor;
@@ -47,10 +47,10 @@ public class ShooterSubsystemTest extends SubsystemBase {
             shooterPID.setTolerance(convertRPMToTicksPerSec(tolerance));
 
             double currentVelocity = shooterMotor.getVelocity();
-            double output = shooterPID.calculate(currentVelocity, ticksPerSec);
+//            double output = shooterPID.calculate(currentVelocity, ticksPerSec);
 
             //if setpoint is built in, could this possibly be just:
-//            double output = shooterPID.calculate(currentVelocity);
+            double output = shooterPID.calculate(currentVelocity);
 
             shooterMotor.set(output);
         }

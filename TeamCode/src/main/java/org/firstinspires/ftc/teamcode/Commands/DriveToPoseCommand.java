@@ -10,6 +10,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 //import com.seattlesolvers.solverslib.command.Robot;
 import org.firstinspires.ftc.teamcode.MainTeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 
 
 public class DriveToPoseCommand extends CommandBase {
@@ -20,12 +21,12 @@ public class DriveToPoseCommand extends CommandBase {
 
 
 
-    public DriveToPoseCommand(Follower follower, Pose targetPose, GamepadEx driver)
+    public DriveToPoseCommand(Pose targetPose, GamepadEx driver)
     {
         robot = Robot.getInstance();
         this.targetPose = targetPose;
         this.driver = driver;
-//        addRequirements(follower);
+        addRequirements(robot.mecanumDrive);
 
     }
 

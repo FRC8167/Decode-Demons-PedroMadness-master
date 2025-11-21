@@ -90,12 +90,12 @@ public class MainTeleOp extends CommandOpMode {
 //        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
 
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
-        driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose, driver));
+        driveToShootPose.whenPressed(new DriveToPoseCommand(shootingPose, driver));
 
         Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    new DriveToPoseCommand(robot.follower, shootingPose, driver),
+                    new DriveToPoseCommand(shootingPose, driver),
                         new ShooterSpinupCommand(robot.shooter, 6000.0)
 
 //                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
