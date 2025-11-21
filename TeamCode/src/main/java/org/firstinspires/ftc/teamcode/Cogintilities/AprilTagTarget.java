@@ -12,15 +12,43 @@ public class AprilTagTarget {
     private double yaw, pitch, roll;
     private double range, bearing, elevation;
 
+    Robot.AllianceColor alliance;
 
-    public AprilTagTarget(int targetTag) {
-        targetId = targetTag;
+    /**
+     *
+     * @param allianceColor
+     */
+    public AprilTagTarget(Robot.AllianceColor allianceColor) {
 
+        alliance = allianceColor;
+        switch (alliance) {
+            case BLUE:
+                targetId = BLUE_GOAL;
+                break;
+
+            case RED:
+                targetId = RED_GOAL;
+                break;
+        }
     }
 
 
+    /**
+     *
+     * @return target tag ID
+     */
+    public int tagId() {
+        return targetId;
+    }
 
 
-
+    /**
+     *
+     * @return Alliance color as a string
+     */
+    public String getAlliance() {
+        return alliance.toString();
+    }
 
 }
+

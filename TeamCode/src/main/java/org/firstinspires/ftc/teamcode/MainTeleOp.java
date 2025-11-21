@@ -5,7 +5,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -14,13 +13,13 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import com.bylazar.telemetry.TelemetryManager;
 
+import org.firstinspires.ftc.teamcode.Cogintilities.AprilTagTarget;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeedSequence;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
@@ -39,6 +38,9 @@ public class MainTeleOp extends CommandOpMode {
     private Pose autoEndPose = new Pose(0, 0, 0);
 
     private final double shooterRPM = 5000;
+
+    private double tagBearing;
+    private int goalTag;
 
 
     @Override
@@ -59,6 +61,16 @@ public class MainTeleOp extends CommandOpMode {
 
         /* For Vision algorithm development when no AutoOp is being run first */
         if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
+        switch (robot.getAlliance()) {
+            case RED:
+                goalTag = 24;
+                break;
+            case BLUE:
+                goalTag = 20;
+                break;
+            default:
+                goalTag = 99;
+        }
 
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
@@ -84,6 +96,15 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
 
         autoEndPose = robot.follower.getPose();
+
+        if(robot.vision.tagInView(goalTag)) {
+            tagBearing = robot.vision.getTagDataById(goalTag).ftcPose.bearing;
+            telemetry.addData("Goal Tag Detected:", robot.vision.getTagDataById(goalTag).metadata.name);
+        } else {
+            tagBearing = 0;
+            telemetry.addLine("No target tags (20–24) detected.");
+        }
+
 //        AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
 //        if (tag != null) {
@@ -148,12 +169,10 @@ public class MainTeleOp extends CommandOpMode {
 //        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new RunCommand(() -> { robot.mdrive.setTargetHeading(20);      // Change this April Tag Bearing when ready
+                .whileHeld(new RunCommand(() -> { robot.mdrive.setTargetHeading(tagBearing);   // Always point toward goal april tag
                                                     robot.mdrive.setDriveMode(MecanumDrive.DriveModes.CONSTANT_HEADING);
-                                                  } ))
+                                                } ))
                 .whenReleased(new RunCommand(() -> robot.mdrive.setDriveMode(MecanumDrive.DriveModes.ROBO_CENTRIC) ));
-
-
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed( new RunCommand(robot.mdrive::enableSnailDrive))
