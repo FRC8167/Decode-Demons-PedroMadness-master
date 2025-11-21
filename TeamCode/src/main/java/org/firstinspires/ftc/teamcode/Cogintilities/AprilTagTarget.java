@@ -12,6 +12,7 @@ public class AprilTagTarget {
     private double yaw, pitch, roll;
     private double range, bearing, elevation;
 
+
     public AprilTagTarget(int targetTag) {
         targetId = targetTag;
 
