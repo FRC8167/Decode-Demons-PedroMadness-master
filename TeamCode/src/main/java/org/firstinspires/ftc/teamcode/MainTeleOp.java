@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeedSequence;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
+import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -129,24 +130,30 @@ public class MainTeleOp extends CommandOpMode {
 
 //        driver.getGamepadButton(GamepadKeys.Button.B).doSomething
 
-//        driver.getGamepadButton(GamepadKeys.Button.X).doSomething
+        driver.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new SequentialCommandGroup(
+                        new ParallelCommandGroup (
+                                new DriveToPoseCommand(robot.follower, shootingPose),
+                                new ShooterSpinupCommand(robot.shooter, shooterRPM)
+                        ),
+                        //                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
+                        //                        new InstantCommand(robot.feeder::feed),
+                        //                        new WaitCommand(5000),
+                        //                        new InstantCommand(robot.feeder::stop),
+                        new FeedSequence(robot.feeder),
+                        new RunCommand(() -> robot.shooter.setVelocity(0) )
+                )
+        );
 
 //        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new SequentialCommandGroup(
-                                   new ParallelCommandGroup (
-                                        new DriveToPoseCommand(robot.follower, shootingPose),
-                                        new ShooterSpinupCommand(robot.shooter, shooterRPM)
-                                    ),
-            //                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
-            //                        new InstantCommand(robot.feeder::feed),
-            //                        new WaitCommand(5000),
-            //                        new InstantCommand(robot.feeder::stop),
-                                    new FeedSequence(robot.feeder),
-                                    new RunCommand(() -> robot.shooter.setVelocity(0) )
-                )
-        );
+                .whenPressed(new RunCommand(() -> { robot.mdrive.setTargetHeading(20);
+                                                    robot.mdrive.setDriveMode(MecanumDrive.DriveModes.CONSTANT_HEADING);
+                                                  } ))
+                .whenReleased(new RunCommand(() -> robot.mdrive.setDriveMode(MecanumDrive.DriveModes.ROBO_CENTRIC) ));
+
+
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed( new RunCommand(robot.mdrive::enableSnailDrive))
