@@ -39,6 +39,8 @@ public class ShooterSpinupCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        // If target velocity is zero, we finish immediately (stop command)
+        if (targetVelocity == 0) return true;
 
         // Otherwise, only finish when shooter reaches near target
         return shooter.atTargetVelocity();

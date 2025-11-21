@@ -13,10 +13,6 @@ public class SetIntake extends CommandBase {
     public SetIntake(Intake intake, Intake.MotorState motorState) {
         this.intake = intake;
         this.motorState = motorState;
-//        this.telemetry = telemetry;
-
-
-
         addRequirements(intake);
     }
 

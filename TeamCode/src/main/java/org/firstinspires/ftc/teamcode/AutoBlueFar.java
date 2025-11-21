@@ -15,6 +15,8 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.SetIntake;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinReadyCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -78,30 +80,30 @@ public class AutoBlueFar extends CommandOpMode {
     public void run() {
         super.run();
         schedule(
-                // DO NOT REMOVE: updates follower to follow path
-//                new RunCommand(() -> robot.follower.update()),
-//                new WaitCommand(3000),  //replace with shoot command
                 new SequentialCommandGroup(
-                        new ShooterSpinupCommand(robot.shooter, 6000),
+                        //shoot pre-loaded artifact
+                        new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000),
                         new InstantCommand(() -> robot.feeder.feed()),
-                        new FollowPathCommand(robot.follower, path1, false),  //true hold end
-                        new WaitCommand(2000),
+                        new WaitCommand(500),
                         new InstantCommand(() -> robot.feeder.stop()),
+
+                        //drive to GPP spike mark
                         new ParallelCommandGroup(
-                                new FollowPathCommand(robot.follower, path2, false),
-                                new InstantCommand(() -> robot.intake.setMotorState(Intake.MotorState.FORWARD))
-                        ),
+                            new FollowPathCommand(robot.follower, path1, false),
+                            new SetIntake(robot.intake, Intake.MotorState.FORWARD)
+                            ),
 
+                        //gobble one or two artifacts?
+                        new FollowPathCommand(robot.follower, path2, false),
 
-                        new ParallelCommandGroup(
-
-                                new FollowPathCommand(robot.follower, path3, false),
-                                new ShooterSpinupCommand(robot.shooter, 4000)
-                        ),
+                        //drive to hotting position and shoot then turn off motors
+                        new FollowPathCommand(robot.follower, path3, false),
                         new InstantCommand(() -> robot.feeder.feed()),
-                        new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
-
-                )
+                        new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
+                        new WaitCommand(500),
+                        new InstantCommand(() -> robot.feeder.stop()),
+                        new ShooterSpinReadyCommand(robot.shooterSubsystemTest,0.0)
+                        )
         );
 
         robot.follower.update();
@@ -115,7 +117,9 @@ public class AutoBlueFar extends CommandOpMode {
     }
 
     @Override
-    public void end() {}
+    public void end() {
+        robot.autoEndPose = robot.follower.getPose();
+    }
 
 
 }

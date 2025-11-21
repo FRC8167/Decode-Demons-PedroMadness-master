@@ -6,20 +6,27 @@ import com.pedropathing.paths.PathChain;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 //import com.seattlesolvers.solverslib.command.Robot;
+import org.firstinspires.ftc.teamcode.MainTeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
 
 
 public class DriveToPoseCommand extends CommandBase {
 
-//    private final Follower follower;
     private final Pose targetPose; // target pose including heading
     private final Robot robot;
+    private final GamepadEx driver;
 
 
-    public DriveToPoseCommand(Follower follower, Pose targetPose) {
+
+    public DriveToPoseCommand(Follower follower, Pose targetPose, GamepadEx driver)
+    {
         robot = Robot.getInstance();
         this.targetPose = targetPose;
+        this.driver = driver;
+//        addRequirements(follower);
+
     }
 
     @Override
@@ -50,8 +57,11 @@ public class DriveToPoseCommand extends CommandBase {
             double headingError = Math.abs(current.getHeading() - targetPose.getHeading());
 
             // Tolerances: 1 inch, 3 degrees
-            return distanceXError < 2.0 && distanceYError < 2.0 && headingError < Math.toRadians(3);
-        }
+            // Driver override: joystick magnitude > 0.1
+        boolean driverOverride = driver.getLeftY() > 0.1;
+
+        return (distanceXError < 2.0 && distanceYError < 2.0 && headingError < Math.toRadians(3))
+                || driverOverride;        }
 
     @Override
     public void end(boolean interrupted) {

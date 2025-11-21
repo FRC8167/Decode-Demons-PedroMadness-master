@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
+import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystemTest;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -29,6 +31,8 @@ import java.util.List;
 public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     private static final Robot instance = new Robot();
+
+
     public static Robot getInstance() {
         return instance;
     }
@@ -41,6 +45,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public Telemetry telemetry;
 
+
+    public Pose autoEndPose = null;
     public static OpModeType OP_MODE_TYPE;
     static List<LynxModule> ctrlHubs;
 
@@ -69,6 +75,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public SensorColor colorSensor;
     public Vision vision;
     public Feeder feeder;
+    public ShooterSubsystemTest shooterSubsystemTest;
 
 
 
@@ -110,6 +117,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         intake  = new Intake(intakeMotor);
         feeder  = new Feeder(feederServoLeft, feederServoRight);
         shooter = new Shooter(shooterMotor);
+        shooterSubsystemTest = new ShooterSubsystemTest(shooterMotor);
         vision  = new Vision(webCam1);
 
 

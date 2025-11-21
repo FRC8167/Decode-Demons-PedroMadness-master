@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,24 +14,21 @@ import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import com.bylazar.telemetry.TelemetryManager;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
-
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinReadyCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
-
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
-
+import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystemTest;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
 @TeleOp(name="MainTeleOp", group="Competition")
-public class MainTeleOp extends CommandOpMode {
+public class MainTeleOpTest extends CommandOpMode {
 
     public GamepadEx driver;
     public GamepadEx operator;
@@ -60,9 +57,10 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        double targetVelocity = 6000; //rpm
-//        double targetRPM = 6000; //rpm
 
+        //end pose held in robot
+        //if auto ran, last pose is used or else default of 24,24,0
+        Pose startPose = robot.autoEndPose != null ? robot.autoEndPose : new Pose(24, 24, 0);
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
 
@@ -82,36 +80,29 @@ public class MainTeleOp extends CommandOpMode {
         Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
         intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
 
-//        Button intakePassive = new GamepadButton(operator, GamepadKeys.Button.X);  //needed?
-//        intakePassive.whileHeld(new SetIntake(robot.intake, Intake.MotorState.PASSIVE));//needed?
-
-//        Shooter Button Bindings
-//        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
-//        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
-
         Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
         driveToShootPose.whenPressed(new DriveToPoseCommand(robot.follower, shootingPose, driver));
 
         Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         shootSequenceButton.whenPressed(new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    new DriveToPoseCommand(robot.follower, shootingPose, driver),
-                        new ShooterSpinupCommand(robot.shooter, 6000.0)
+//                        new DriveToPoseCommand(robot.follower, shootingPose).withInterrupt(() -> driver.getLeftStick().getMagnitude() > 0),
 
-//                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
+                        new DriveToPoseCommand(robot.follower, shootingPose, driver),
+                    new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
         );
 
 
-//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
-//                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
-
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
-                .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
+                .whenHeld (new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0))
+                .whenReleased(new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 0));
+
+//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+//                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
+//                .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
 
         /* Engage Drive Snail Mode */
 //        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
