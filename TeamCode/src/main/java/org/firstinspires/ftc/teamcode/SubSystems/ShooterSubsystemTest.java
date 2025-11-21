@@ -38,7 +38,7 @@ public class ShooterSubsystemTest extends SubsystemBase {
 
         public void stop() {
             targetRPM = 0;
-            shooterMotor.set(0);
+//            shooterMotor.set(0);
         }
 
         @Override
@@ -47,10 +47,10 @@ public class ShooterSubsystemTest extends SubsystemBase {
             shooterPID.setTolerance(convertRPMToTicksPerSec(tolerance));
 
             double currentVelocity = shooterMotor.getVelocity();
-//            double output = shooterPID.calculate(currentVelocity, ticksPerSec);
+            double output = shooterPID.calculate(currentVelocity, ticksPerSec);
 
             //if setpoint is built in, could this possibly be just:
-            double output = shooterPID.calculate(currentVelocity);
+//            double output = shooterPID.calculate(currentVelocity);
 
             shooterMotor.set(output);
         }

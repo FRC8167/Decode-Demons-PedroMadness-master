@@ -18,6 +18,8 @@ public class SetIntake extends CommandBase {
 
     @Override
     public void initialize() {
+        timer = new ElapsedTime();   // <-- add this line
+
         timer.reset();
         intake.setMotorState(motorState);
     }

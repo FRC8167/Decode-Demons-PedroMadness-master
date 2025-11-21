@@ -22,7 +22,7 @@ public class FeederToggleForwardCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        timer.reset();
+        timer = new ElapsedTime();
         feeder.feed();
     }
 
@@ -30,6 +30,11 @@ public class FeederToggleForwardCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.milliseconds() > 1000;
+        return timer.milliseconds() >= 2000;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        feeder.stop();
     }
 }

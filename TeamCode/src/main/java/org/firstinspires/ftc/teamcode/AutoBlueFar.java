@@ -69,23 +69,13 @@ public class AutoBlueFar extends CommandOpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-//        robot.follower = Constants.createFollower(hardwareMap);
         buildPaths();
 
-
-    }
-
-
-    @Override
-    public void run() {
-        super.run();
         schedule(
                 new SequentialCommandGroup(
                         //shoot pre-loaded artifact
                         new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000),
-                        new InstantCommand(() -> robot.feeder.feed()),
-                        new WaitCommand(500),
-                        new InstantCommand(() -> robot.feeder.stop()),
+                        new FeederToggleForwardCommand(robot.feeder),
 
                         //drive to GPP spike mark
                         new ParallelCommandGroup(
@@ -98,13 +88,20 @@ public class AutoBlueFar extends CommandOpMode {
 
                         //drive to hotting position and shoot then turn off motors
                         new FollowPathCommand(robot.follower, path3, false),
-                        new InstantCommand(() -> robot.feeder.feed()),
                         new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
-                        new WaitCommand(500),
-                        new InstantCommand(() -> robot.feeder.stop()),
+                        new FeederToggleForwardCommand(robot.feeder),
                         new ShooterSpinReadyCommand(robot.shooterSubsystemTest,0.0)
                         )
         );
+
+
+    }
+
+
+    @Override
+    public void run() {
+        super.run();
+
 
         robot.follower.update();
         robot.follower.getPose();
