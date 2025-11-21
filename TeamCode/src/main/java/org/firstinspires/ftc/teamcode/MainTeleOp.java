@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Commands.FeedSequence;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 //@Disabled
@@ -98,14 +99,13 @@ public class MainTeleOp extends CommandOpMode {
         autoEndPose = robot.follower.getPose();
 
         if(robot.vision.tagInView(goalTag)) {
-            tagBearing = robot.vision.getTagDataById(goalTag).ftcPose.bearing;
-            telemetry.addData("Goal Tag Detected:", robot.vision.getTagDataById(goalTag).metadata.name);
+            AprilTagDetection tag = robot.vision.getTagDataById(goalTag);
+            tagBearing = tag.ftcPose.bearing;
+            telemetry.addData("Goal Tag Detected:", tag.metadata.name);
         } else {
             tagBearing = 0;
             telemetry.addLine("No target tags (20–24) detected.");
         }
-
-//        AprilTagDetection tag = robot.vision.getFirstTargetTag();
 
 //        if (tag != null) {
 //            telemetry.addLine("Target Tag Detected!");
