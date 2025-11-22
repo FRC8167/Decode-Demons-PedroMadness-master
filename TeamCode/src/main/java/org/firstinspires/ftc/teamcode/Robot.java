@@ -6,19 +6,14 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.hardware.SensorColor;
 import com.seattlesolvers.solverslib.hardware.motors.CRServo;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
-import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
-import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystemTest;
+import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -71,11 +66,11 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //    public MecanumDrive mdrive;
 
     public Intake intake;
-    public Shooter shooter;
+    public ShooterSubsystem shooter;
     public SensorColor colorSensor;
     public Vision vision;
     public Feeder feeder;
-    public ShooterSubsystemTest shooterSubsystemTest;
+    public ShooterSubsystem shooterSubsystem;
 
 
 
@@ -116,8 +111,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         mecanumDrive = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake  = new Intake(intakeMotor);
         feeder  = new Feeder(feederServoLeft, feederServoRight);
-        shooter = new Shooter(shooterMotor);
-        shooterSubsystemTest = new ShooterSubsystemTest(shooterMotor);
+        shooter = new ShooterSubsystem(shooterMotor);
+
         vision  = new Vision(webCam1);
 
 

@@ -7,7 +7,7 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
 @Configurable
-public class ShooterSubsystemTest extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
 
         public MotorEx shooterMotor;
         private final PIDFController shooterPID;
@@ -15,13 +15,13 @@ public class ShooterSubsystemTest extends SubsystemBase {
 
         //Panels Configurables
         public static double targetRPM = 0.0;
-        public static double kv = 5.0;
-        public static double kp = 0.0;
-        public static double ki = 0.0;  //is this even ever used????
-        public static double kd = 0.0;
-        public static double tolerance= 800.0;  //RPM
+        public static double kv = 0.0004;
+        public static double kp = 0.002;
+        public static double ki = 0.02;
+        public static double kd = 0.00003;
+        public static double tolerance= 100.0;  //RPM
 
-        public ShooterSubsystemTest(MotorEx motor) {
+        public ShooterSubsystem(MotorEx motor) {
             shooterMotor = motor;
             shooterMotor.setRunMode(Motor.RunMode.VelocityControl);
             shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);

@@ -6,7 +6,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Button;
@@ -17,12 +16,11 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.ShooterSpinReadyCommand;
-import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
-import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystemTest;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -89,7 +87,7 @@ public class MainTeleOpTest extends CommandOpMode {
 //                        new DriveToPoseCommand(robot.follower, shootingPose).withInterrupt(() -> driver.getLeftStick().getMagnitude() > 0),
 
                         new DriveToPoseCommand(shootingPose, driver),
-                    new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0)
+                    new ShooterSpinUpCommand(robot.shooterSubsystem, 6000.0)
                 ),
                 new FeederToggleForwardCommand(robot.feeder)
             )
@@ -97,8 +95,8 @@ public class MainTeleOpTest extends CommandOpMode {
 
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenHeld (new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0))
-                .whenReleased(new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 0));
+                .whenHeld (new ShooterSpinUpCommand(robot.shooterSubsystem, 6000.0))
+                .whenReleased(new ShooterSpinUpCommand(robot.shooterSubsystem, 0));
 
 //        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
 //                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
@@ -152,7 +150,7 @@ public class MainTeleOpTest extends CommandOpMode {
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
 //        telemetry.addData("Shooter Power", robot.shooter.getPower());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
 
 //        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());

@@ -6,21 +6,16 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
-import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
-import org.firstinspires.ftc.teamcode.Commands.ShooterSpinReadyCommand;
-import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterStopCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 //@Disabled
 @Autonomous(name="AutoBlueFar") //, preselectTeleOp = "TeleOpMode", group="Name of Group")
@@ -75,7 +70,7 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         //shoot pre-loaded artifact
-                        new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000),
+                        new ShooterSpinUpCommand(robot.shooterSubsystemTest, 6000),
                         new FeederToggleForwardCommand(robot.feeder),
 
                         new ParallelCommandGroup(
@@ -91,9 +86,9 @@ public class AutoBlueFar extends CommandOpMode {
 
                         //drive to shooting position, shoot
                         new ParallelCommandGroup(
-                            new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0),
+                            new ShooterSpinUpCommand(robot.shooterSubsystemTest, 6000.0),
                             new FollowPathCommand(robot.follower, path3, false),
-                            new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
+                                new SetIntake(robot.intake, Intake.MotorState.STOP)
                         ),
                         new FeederToggleForwardCommand(robot.feeder),
                         new ShooterStopCommand(robot.shooterSubsystemTest)
@@ -116,7 +111,8 @@ public class AutoBlueFar extends CommandOpMode {
         telemetry.addData("X:  ", robot.follower.getPose().getX());
         telemetry.addData("Y:  ", robot.follower.getPose().getY());
         telemetry.addData("Theta:  ", robot.follower.getPose().getHeading());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.g
+
         telemetry.update();
     }
 

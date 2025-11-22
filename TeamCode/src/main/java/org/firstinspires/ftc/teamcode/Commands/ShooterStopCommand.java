@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 
 import com.seattlesolvers.solverslib.command.CommandBase;
-import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystemTest;
+import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystem;
 
 public class ShooterStopCommand extends CommandBase {
 
-    private final ShooterSubsystemTest shooter;
+    private final ShooterSubsystem shooter;
 
-    public ShooterStopCommand(ShooterSubsystemTest shooter) {
+    public ShooterStopCommand(ShooterSubsystem shooter) {
         this.shooter = shooter;
         addRequirements(shooter);
     }

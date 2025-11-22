@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,12 +14,10 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import com.bylazar.telemetry.TelemetryManager;
-import com.seattlesolvers.solverslib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
 
 import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
