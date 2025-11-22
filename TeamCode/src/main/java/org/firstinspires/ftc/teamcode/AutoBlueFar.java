@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinReadyCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinupCommand;
+import org.firstinspires.ftc.teamcode.Commands.ShooterStopCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -27,7 +28,7 @@ public class AutoBlueFar extends CommandOpMode {
     Robot robot = Robot.getInstance();
 
     private ElapsedTime timer;
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(-70));
+    private final Pose startPose = new Pose(56, 8, Math.toRadians(-80));
     private final Pose artifactsGPPPose = new Pose(56, 36, Math.toRadians(180));
     private final Pose collectGPPPose = new Pose(20, 36, Math.toRadians(180));
     private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-70));
@@ -77,22 +78,28 @@ public class AutoBlueFar extends CommandOpMode {
                         new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000),
                         new FeederToggleForwardCommand(robot.feeder),
 
-                        //drive to GPP spike mark
                         new ParallelCommandGroup(
-                            new FollowPathCommand(robot.follower, path1, false),
-                            new SetIntake(robot.intake, Intake.MotorState.FORWARD)
-                            ),
+                            new ShooterStopCommand(robot.shooterSubsystemTest),
+                            new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
+                        ),
 
                         //gobble one or two artifacts?
-                        new FollowPathCommand(robot.follower, path2, false),
+                        new ParallelCommandGroup(
+                            new SetIntake(robot.intake, Intake.MotorState.FORWARD),
+                            new FollowPathCommand(robot.follower, path2, false)
+                            ),
 
-                        //drive to hotting position and shoot then turn off motors
-                        new FollowPathCommand(robot.follower, path3, false),
-                        new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP)),
+                        //drive to shooting position, shoot
+                        new ParallelCommandGroup(
+                            new ShooterSpinReadyCommand(robot.shooterSubsystemTest, 6000.0),
+                            new FollowPathCommand(robot.follower, path3, false),
+                            new InstantCommand(()->robot.intake.setMotorState(Intake.MotorState.STOP))
+                        ),
                         new FeederToggleForwardCommand(robot.feeder),
-                        new ShooterSpinReadyCommand(robot.shooterSubsystemTest,0.0)
-                        )
+                        new ShooterStopCommand(robot.shooterSubsystemTest)
+                )
         );
+
 
 
     }

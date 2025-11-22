@@ -30,7 +30,7 @@ public class FeederToggleForwardCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.milliseconds() >= 2000;
+        return timer.milliseconds() >= 3000;
     }
 
     @Override
