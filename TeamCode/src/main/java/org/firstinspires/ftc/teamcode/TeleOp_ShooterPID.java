@@ -34,6 +34,7 @@ public class TeleOp_ShooterPID extends OpMode {
     public void init() {
         MotorEx shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
         shooter  = new Shooter_Alternate(shooterMotor);
+        nextState = State.HIGH;
         tmPanels = PanelsTelemetry.INSTANCE.getTelemetry();
     }
 
@@ -74,14 +75,20 @@ public class TeleOp_ShooterPID extends OpMode {
 
 
         // Display on Panels
-        tmPanels.debug("Commanded Speed (RPM)",       cmd);
-        tmPanels.debug("Shooter Speed (RPM)", "%.1f", shooter.getRPM());
-        tmPanels.debug("Shooter Speed (TPS)", "%.1f", shooter.getTicsPerSec());
-        tmPanels.debug("Shooter at Target ",          shooter.atTargetVelocity());
+//        tmPanels.debug("Commanded Speed (RPM)",       cmd);
+//        tmPanels.debug("Next State", nextState.toString());
+//        tmPanels.debug("Shooter Speed (RPM)", "%.1f", shooter.getRPM());
+//        tmPanels.debug("Shooter Speed (TPS)", "%.1f", shooter.getTicsPerSec());
+//        tmPanels.debug("Shooter at Target ",          shooter.atTargetVelocity());
+
+        shooter.periodic();
 
         tmPanels.addData("------- Using addData ", "instead of debug -------");
-        tmPanels.addData("Commanded RPM", cmd);
-        tmPanels.addData("Motor RPM",     shooter.getRPM());
+        tmPanels.addData("Commanded RPM",       cmd);
+        tmPanels.addData("Motor RPM",           shooter.getRPM());
+        tmPanels.addData("Shooter Speed (TPS)", shooter.getTicsPerSec());
+        tmPanels.addData("TargetRPM", shooter.getTargetRPM());
+        tmPanels.addData("Shooter at Target ",  shooter.atTargetVelocity());
 
         tmPanels.update(telemetry);     // Should update both the driver station and panels
 
