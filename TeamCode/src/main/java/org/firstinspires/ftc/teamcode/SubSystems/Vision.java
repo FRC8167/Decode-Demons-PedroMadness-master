@@ -154,7 +154,7 @@ public class Vision extends SubsystemBase {
     public double getDistanceToGoal() {
         for (AprilTagDetection detection : currentDetections) {
             if (detection.id == 20  || detection.id == 24) {
-                return (0.0254 * detection.ftcPose.range); //meters for Dave
+                return (detection.ftcPose.range);
             }
         }
         return Double.NaN; //what is Dave?

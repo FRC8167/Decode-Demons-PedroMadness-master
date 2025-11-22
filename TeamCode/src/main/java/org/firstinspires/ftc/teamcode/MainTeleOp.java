@@ -158,7 +158,7 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
 //        telemetry.addData("Shooter Power", robot.shooter.getPower());
-        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
 
 //        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());

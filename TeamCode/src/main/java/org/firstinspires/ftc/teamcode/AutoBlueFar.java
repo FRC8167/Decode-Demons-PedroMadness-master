@@ -14,7 +14,6 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
-import org.firstinspires.ftc.teamcode.Commands.ShooterStopCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 //@Disabled
@@ -70,12 +69,13 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         //shoot pre-loaded artifact
-                        new ShooterSpinUpCommand(robot.shooterSubsystemTest, 6000),
+                        new ShooterSpinUpCommand(robot.shooterSubsystem, 6000),
                         new FeederToggleForwardCommand(robot.feeder),
 
                         new ParallelCommandGroup(
-                            new ShooterStopCommand(robot.shooterSubsystemTest),
-                            new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
+                                new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0),
+
+                                new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
                         ),
 
                         //gobble one or two artifacts?
@@ -86,12 +86,12 @@ public class AutoBlueFar extends CommandOpMode {
 
                         //drive to shooting position, shoot
                         new ParallelCommandGroup(
-                            new ShooterSpinUpCommand(robot.shooterSubsystemTest, 6000.0),
+                            new ShooterSpinUpCommand(robot.shooterSubsystem, 6000.0),
                             new FollowPathCommand(robot.follower, path3, false),
                                 new SetIntake(robot.intake, Intake.MotorState.STOP)
                         ),
                         new FeederToggleForwardCommand(robot.feeder),
-                        new ShooterStopCommand(robot.shooterSubsystemTest)
+                        new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0)
                 )
         );
 
