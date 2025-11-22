@@ -6,7 +6,7 @@ public class MirrorUtility{
 
     public static Pose mirror(Pose bluePose) {
         double redX = 144 - bluePose.getX();
-        double redY = 144 - bluePose.getY();
+        double redY = bluePose.getY();
 
         double redHeading = bluePose.getHeading() + Math.toRadians(180);
 
