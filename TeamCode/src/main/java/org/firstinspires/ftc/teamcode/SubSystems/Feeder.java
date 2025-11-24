@@ -14,7 +14,7 @@ public class Feeder extends SubsystemBase{
         private final CRServo feederServoRight;
 
         public Feeder(CRServo feederServoLeft, CRServo feederServoRight) {
-            this.feederServoLeft = feederServoLeft;
+            this.feederServoLeft  = feederServoLeft;
             this.feederServoRight = feederServoRight;
         }
 

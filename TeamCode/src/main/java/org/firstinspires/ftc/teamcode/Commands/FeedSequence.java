@@ -18,7 +18,7 @@ public class FeedSequence extends SequentialCommandGroup {
     {
         addCommands(
                 new InstantCommand(feeder::feed),
-                new WaitCommand(5000),
+                new WaitCommand(3000),
                 new InstantCommand(feeder::stop)
         );
         addRequirements(feeder);
