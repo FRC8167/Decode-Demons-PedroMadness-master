@@ -2,28 +2,28 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
-import com.seattlesolvers.solverslib.hardware.motors.CRServo;
-import com.seattlesolvers.solverslib.hardware.motors.CRServoEx;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
-import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-public class FeederToggleForwardCommand extends CommandBase {
+public class FeederCommand extends CommandBase {
 
     private final Feeder feeder;
+    private final Feeder.ServoState servoState;
+
     ElapsedTime timer;
 
 
 
-    public FeederToggleForwardCommand(Feeder feeder) {
+    public FeederCommand(Feeder.ServoState servoState, Feeder feeder) {
         this.feeder = feeder;
+        this.servoState = servoState;
         addRequirements(feeder);
     }
 
     @Override
     public void initialize() {
         timer = new ElapsedTime();
-        feeder.feed();
+        feeder.feed(servoState);
     }
 
 
@@ -35,6 +35,6 @@ public class FeederToggleForwardCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        feeder.stop();
+        feeder.feed(Feeder.ServoState.STOP);
     }
 }

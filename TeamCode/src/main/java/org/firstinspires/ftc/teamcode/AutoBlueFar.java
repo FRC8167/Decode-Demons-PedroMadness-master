@@ -11,9 +11,10 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 
-import org.firstinspires.ftc.teamcode.Commands.FeederToggleForwardCommand;
+import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
 import org.firstinspires.ftc.teamcode.Commands.SetIntake;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
+import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
 //@Disabled
@@ -69,11 +70,14 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         //shoot pre-loaded artifact
-                        new ShooterSpinUpCommand(robot.shooterSubsystem, 6000),
-                        new FeederToggleForwardCommand(robot.feeder),
+                        new ShooterSpinUpCommand(robot.shooterSubsystem, 5800),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF ),
+                        new ShooterSpinUpCommand(robot.shooterSubsystem, 5800),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
 
                         new ParallelCommandGroup(
                                 new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0),
+                                new FeederCommand(Feeder.ServoState.STOP, robot.feederR),
 
                                 new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
                         ),
@@ -90,7 +94,7 @@ public class AutoBlueFar extends CommandOpMode {
                             new FollowPathCommand(robot.follower, path3, false),
                                 new SetIntake(robot.intake, Intake.MotorState.STOP)
                         ),
-                        new FeederToggleForwardCommand(robot.feeder),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF ),
                         new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0)
                 )
         );

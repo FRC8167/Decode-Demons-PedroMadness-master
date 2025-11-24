@@ -69,7 +69,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
     public ShooterSubsystem shooter;
     public SensorColor colorSensor;
     public Vision vision;
-    public Feeder feeder;
+    public Feeder feederF, feederR;
     public ShooterSubsystem shooterSubsystem;
 
 
@@ -86,8 +86,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         intakeMotor = new MotorEx(hardwareMap, "Intake").setCachingTolerance(0.01);
         shooterMotor = new MotorEx(hardwareMap, "Shooter").setCachingTolerance(0.01);
 
-        CRServo feederServoLeft = new CRServo(hardwareMap, "feederServoLeft");
-        CRServo feederServoRight = new CRServo(hardwareMap, "feederServoRight");
+        CRServo feederServoF = new CRServo(hardwareMap, "feederServoF");
+        CRServo feederServoR = new CRServo(hardwareMap, "feederServoR");
 //
 //        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 //        pinpoint.setOffsets(6.5, 0.0, DistanceUnit.INCH);  //TODO measure this
@@ -110,14 +110,15 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         //Instantiate Subsystems
         mecanumDrive = new MecanumDrive(driveMotorLF, driveMotorLR, driveMotorRF, driveMotorRR);
         intake  = new Intake(intakeMotor);
-        feeder  = new Feeder(feederServoLeft, feederServoRight);
+        feederF  = new Feeder(feederServoF);
+        feederR = new Feeder(feederServoR);
         shooter = new ShooterSubsystem(shooterMotor);
 
         vision  = new Vision(webCam1);
 
 
         // Register Subsystems with the Command Scheduler
-        register(mecanumDrive, intake, shooter, feeder, vision);
+        register(mecanumDrive, intake, shooter, feederF, feederR, vision);
 
         if (OP_MODE_TYPE.equals(OpModeType.AUTO)) {
             initHasMovement();
