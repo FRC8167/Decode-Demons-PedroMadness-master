@@ -32,7 +32,7 @@ public class MainTeleOp extends CommandOpMode {
 
     private final Robot robot = Robot.getInstance();
 
-    static TelemetryManager telemetryM;
+    static TelemetryManager tm;
 
     private final Pose startPose    = new Pose(24, 24, Math.toRadians(0)); // Test
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
@@ -84,7 +84,7 @@ public class MainTeleOp extends CommandOpMode {
         bindDriverButtons();
         bindOperatorButtons();
 
-        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+        tm = PanelsTelemetry.INSTANCE.getTelemetry();
 
     }
 
@@ -116,17 +116,17 @@ public class MainTeleOp extends CommandOpMode {
 //            telemetry.addLine("No target tags (20–24) detected.");
 //        }
 
-        telemetry.addData("Intake State", robot.intake.getIntakeState());
-        telemetry.addData("autoEndPose", autoEndPose.toString());
-        telemetry.addData("FollowerX", "%.2f", robot.follower.getPose().getX() );
-        telemetry.addData("FollowerY", "%.2f", robot.follower.getPose().getY() );
-        telemetry.addData("FollowerH", "%.1f",Math.toDegrees(robot.follower.getPose().getHeading()));
+        tm.addData("FollowerX", robot.follower.getPose().getX() );
+        tm.addData("FollowerY", robot.follower.getPose().getY() );
+        tm.addData("FollowerH", Math.toDegrees(robot.follower.getPose().getHeading()));
 //        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
-        telemetry.addData("Shooter Velocity (RPM)", "%.1f", robot.shooter.getRPM());
-        telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
+        tm.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
+        tm.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
-        telemetryM.update(telemetry);
+        tm.addData("Feeder State", robot.feeder.getFeedState());
+
+        tm.update(telemetry);
     }
 
 
