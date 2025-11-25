@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -23,6 +25,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
+@Configurable
 //@Disabled
 @TeleOp(name="MainTeleOp", group="Competition")
 public class MainTeleOp extends CommandOpMode {
@@ -38,7 +41,7 @@ public class MainTeleOp extends CommandOpMode {
     private final Pose shootingPose = new Pose(56, 8, Math.toRadians(-45));
     private Pose autoEndPose = new Pose(0, 0, 0);
 
-    private final double shooterRPM = 5000;
+    private final double shooterRPM = 3000;
 
     private double tagBearing;
     private int goalTag;
@@ -61,22 +64,22 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         /* For Vision algorithm development when no AutoOp is being run first */
-        if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
-        switch (robot.getAlliance()) {
-            case RED:
-                goalTag = 24;
-                break;
-            case BLUE:
-                goalTag = 20;
-                break;
-            default:
-                goalTag = 99;
-        }
+//        if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
+//        switch (robot.getAlliance()) {
+//            case RED:
+//                goalTag = 24;
+//                break;
+//            case BLUE:
+//                goalTag = 20;
+//                break;
+//            default:
+//                goalTag = 99;
+//        }
 
-        robot.follower.setStartingPose(startPose);
-        robot.follower.update();
+//        robot.follower.setStartingPose(startPose);
+//        robot.follower.update();
 
-        schedule(new DriveCommand(robot.mdrive, gamepad1));
+//        schedule(new DriveCommand(robot.mdrive, gamepad1));
 //        schedule(new VisionCommand(robot.vision));
 
         driver   = new GamepadEx(gamepad1);
@@ -94,51 +97,39 @@ public class MainTeleOp extends CommandOpMode {
 
         super.run();                    // Gets Command Scheduler Instance
 
-        robot.follower.update();
+//        robot.follower.update();
 
-        autoEndPose = robot.follower.getPose();
-
-        if(robot.vision.tagInView(goalTag)) {
-            AprilTagDetection tag = robot.vision.getTagDataById(goalTag);
-            tagBearing = tag.ftcPose.bearing;
-            telemetry.addData("Goal Tag Detected:", tag.metadata.name);
-        } else {
-            tagBearing = 0;
-            telemetry.addLine("No target tags (20–24) detected.");
-        }
-
-//        if (tag != null) {
-//            telemetry.addLine("Target Tag Detected!");
-//            telemetry.addData("ID", tag.id);
-//            telemetry.addData("Center", "(%.0f, %.0f)", tag.center.x, tag.center.y);
-//            telemetry.addData("Range (in)", "%.1f", tag.ftcPose.range);
+//        if(robot.vision.tagInView(goalTag)) {
+//            AprilTagDetection tag = robot.vision.getTagDataById(goalTag);
+//            tagBearing = tag.ftcPose.bearing;
+//            telemetry.addData("Goal Tag Detected:", tag.metadata.name);
 //        } else {
+//            tagBearing = 0;
 //            telemetry.addLine("No target tags (20–24) detected.");
 //        }
 
-        tm.addData("FollowerX", robot.follower.getPose().getX() );
-        tm.addData("FollowerY", robot.follower.getPose().getY() );
-        tm.addData("FollowerH", Math.toDegrees(robot.follower.getPose().getHeading()));
+
+//        tm.addData("FollowerX", robot.follower.getPose().getX() );
+//        tm.addData("FollowerY", robot.follower.getPose().getY() );
+//        tm.addData("FollowerH", Math.toDegrees(robot.follower.getPose().getHeading()));
 //        telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
         tm.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
         tm.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
-        tm.addData("Feeder State", robot.feeder.getFeedState());
+        tm.addData("Drive Mode",      robot.mdrive.getDriveMode());
+        tm.addData("Drive Authority", robot.mdrive.getControlAuthority());
+        tm.addData("Intake State",    robot.intake.getIntakeState());
+        tm.addData("Feeder State",    robot.feeder.getFeedState());
 
         tm.update(telemetry);
     }
 
 
-    @Override
-    public void end () {
-        autoEndPose = robot.follower.getPose();
-    }
-
-
-    public Pose getAutoEndPose () {
-        return autoEndPose;
-    }
+//    @Override
+//    public void end () {
+//        autoEndPose = robot.follower.getPose();
+//    }
 
 
     /**
@@ -149,12 +140,14 @@ public class MainTeleOp extends CommandOpMode {
         driver.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed((new DriveToPoseCommand(robot.follower, shootingPose)));
 
-//        driver.getGamepadButton(GamepadKeys.Button.B).doSomething
+        driver.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new FeedSequence(robot.feeder));
+
 
         driver.getGamepadButton(GamepadKeys.Button.X)
                 .whenPressed(new SequentialCommandGroup(
                         new ParallelCommandGroup (
-                                new DriveToPoseCommand(robot.follower, shootingPose),
+//                                new DriveToPoseCommand(robot.follower, shootingPose),
                                 new ShooterSpinupCommand(robot.shooter, shooterRPM)
                         ),
                         //                        Trying a Sequential Command group where the three lines below are placed into the FeedSequence SequentialCommand class
@@ -162,21 +155,21 @@ public class MainTeleOp extends CommandOpMode {
                         //                        new WaitCommand(5000),
                         //                        new InstantCommand(robot.feeder::stop),
                         new FeedSequence(robot.feeder),
-                        new RunCommand(() -> robot.shooter.setVelocity(0) )
+                        new InstantCommand(() -> robot.shooter.setVelocity(0) )
                 )
         );
 
 //        driver.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new RunCommand(() -> { robot.mdrive.setTargetHeading(tagBearing);   // Always point toward goal april tag
+                .whileHeld(new InstantCommand(() -> { robot.mdrive.setTargetHeading(tagBearing);   // Always point toward goal april tag
                                                     robot.mdrive.setDriveMode(MecanumDrive.DriveModes.CONSTANT_HEADING);
                                                 } ))
-                .whenReleased(new RunCommand(() -> robot.mdrive.setDriveMode(MecanumDrive.DriveModes.ROBO_CENTRIC) ));
+                .whenReleased(new InstantCommand(() -> robot.mdrive.setDriveMode(MecanumDrive.DriveModes.ROBO_CENTRIC) ));
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed( new RunCommand(robot.mdrive::enableSnailDrive))
-                .whenReleased(new RunCommand(robot.mdrive::disableSnailDrive));
+                .whenPressed( new InstantCommand(robot.mdrive::enableSnailDrive))
+                .whenReleased(new InstantCommand(robot.mdrive::disableSnailDrive));
 
         /* Add driver triggers and other buttons here */
 
@@ -189,13 +182,13 @@ public class MainTeleOp extends CommandOpMode {
     private void bindOperatorButtons() {
 
         operator.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.STOP)));
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.STOP)));
 
         operator.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.REVERSE)));
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.REVERSE)));
 
         operator.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new RunCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD)));
+                .whenPressed(new InstantCommand(() -> robot.intake.setIntakeState(Intake.MotorState.FORWARD)));
 
 //        operator.getGamepadButton(GamepadKeys.Button.Y).doSomething;
 

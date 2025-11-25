@@ -20,9 +20,14 @@ public class Shooter_Alternate extends SubsystemBase {
     /* Public Static for Panels Access */
     public static double targetRPM = 0.0;
     public static double kV = 0.0004;
-    public static double kP = 0.002;
+    public static double kP = 0.0002;
     public static double kI = 0.02;
     public static double kD = 0.00003;
+
+//    public static double kV = 0.00;
+//    public static double kP = 0.00002;
+//    public static double kI = 0.0;
+//    public static double kD = 0.0;
     public static double pidToleranceRPM = 100.0;
 
 
@@ -32,7 +37,7 @@ public class Shooter_Alternate extends SubsystemBase {
         shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setInverted(true);
         shooterPID = new PIDFController(kP, kI, kD, kV);
-        shooterPID.setTolerance(rpmToTicksPerSec(50));
+        shooterPID.setTolerance(rpmToTicksPerSec(pidToleranceRPM));
 
         setVelocity(0.0);
     }
