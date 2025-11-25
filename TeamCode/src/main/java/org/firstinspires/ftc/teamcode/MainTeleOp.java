@@ -64,22 +64,22 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         /* For Vision algorithm development when no AutoOp is being run first */
-//        if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
-//        switch (robot.getAlliance()) {
-//            case RED:
-//                goalTag = 24;
-//                break;
-//            case BLUE:
-//                goalTag = 20;
-//                break;
-//            default:
-//                goalTag = 99;
-//        }
+        if(robot.getAlliance() == Robot.AllianceColor.UNKNOWN) robot.setAlliance(Robot.AllianceColor.BLUE);
+        switch (robot.getAlliance()) {
+            case RED:
+                goalTag = 24;
+                break;
+            case BLUE:
+                goalTag = 20;
+                break;
+            default:
+                goalTag = 99;
+        }
 
 //        robot.follower.setStartingPose(startPose);
 //        robot.follower.update();
 
-//        schedule(new DriveCommand(robot.mdrive, gamepad1));
+        schedule(new DriveCommand(robot.mdrive, gamepad1));
 //        schedule(new VisionCommand(robot.vision));
 
         driver   = new GamepadEx(gamepad1);
