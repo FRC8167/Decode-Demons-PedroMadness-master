@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 
 public class ShooterSpinUpCommand extends CommandBase {
 
-    private final ShooterSubsystem shooterSubsystem;
+    private final Shooter shooter;
     private final double targetRPM;
 
-    public ShooterSpinUpCommand(ShooterSubsystem shooterSubsystem, double targetRPM) {
-        this.shooterSubsystem = shooterSubsystem;
+    public ShooterSpinUpCommand(Shooter shooterSubsystem, double targetRPM) {
+        this.shooter= shooterSubsystem;
         this.targetRPM = targetRPM;
     }
 
@@ -21,17 +21,17 @@ public class ShooterSpinUpCommand extends CommandBase {
 
     @Override
     public void execute() {
-        shooterSubsystem.setVelocity(targetRPM);
+        shooter.setVelocity(targetRPM);
     }
 
     @Override
     public boolean isFinished() {
-        return shooterSubsystem.atTargetVelocity();
+        return shooter.atTargetVelocity();
     }
 
     @Override
     public void end(boolean interrupted) {
-            shooterSubsystem.stop();
+            shooter.stop();
 
     }
 }

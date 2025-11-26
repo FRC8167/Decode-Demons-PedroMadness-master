@@ -12,7 +12,7 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 
 import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
-import org.firstinspires.ftc.teamcode.Commands.SetIntake;
+import org.firstinspires.ftc.teamcode.Commands.SetIntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
@@ -86,7 +86,7 @@ public class AutoBlueFar extends CommandOpMode {
 
                         //gobble one or two artifacts?
                         new ParallelCommandGroup(
-                            new SetIntake(robot.intake, Intake.MotorState.FORWARD, 500),
+                            new SetIntakeCommand(robot.intake, Intake.MotorState.FORWARD, 500),
                             new FollowPathCommand(robot.follower, path2, false)
                             ),
 
@@ -94,9 +94,9 @@ public class AutoBlueFar extends CommandOpMode {
                         new ParallelCommandGroup(
                             new ShooterSpinUpCommand(robot.shooter, 4800.0),
                             new FollowPathCommand(robot.follower, path3, false),
-                                new SetIntake(robot.intake, Intake.MotorState.STOP,100)
+                                new SetIntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                         ),
-                        new SetIntake(robot.intake, Intake.MotorState.FORWARD,500),
+                        new SetIntakeCommand(robot.intake, Intake.MotorState.FORWARD,500),
                         new ParallelCommandGroup(
                         new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR ),
                         new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF )

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.teamcode.SubSystems.MecanumDrive;
-import org.firstinspires.ftc.teamcode.SubSystems.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.SubSystems.Shooter;
 import org.firstinspires.ftc.teamcode.SubSystems.Vision;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -66,11 +66,11 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 //    public MecanumDrive mdrive;
 
     public Intake intake;
-    public ShooterSubsystem shooter;
+    public Shooter shooter;
     public SensorColor colorSensor;
     public Vision vision;
     public Feeder feederF, feederR;
-    public ShooterSubsystem shooterSubsystem;
+    public Shooter shooterSubsystem;
 
 
 
@@ -112,7 +112,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         intake  = new Intake(intakeMotor);
         feederF  = new Feeder(feederServoF);
         feederR = new Feeder(feederServoR);
-        shooter = new ShooterSubsystem(shooterMotor);
+        shooter = new Shooter(shooterMotor);
 
         vision  = new Vision(webCam1);
 

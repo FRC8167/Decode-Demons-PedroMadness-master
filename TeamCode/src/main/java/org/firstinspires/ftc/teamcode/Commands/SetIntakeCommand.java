@@ -5,13 +5,13 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-public class SetIntake extends CommandBase {
+public class SetIntakeCommand extends CommandBase {
     private final Intake intake;
     private final Intake.MotorState motorState;
     private final ElapsedTime timer = new ElapsedTime();
     private final double duration;
 
-    public SetIntake(Intake intake, Intake.MotorState motorState, double duration) {
+    public SetIntakeCommand(Intake intake, Intake.MotorState motorState, double duration) {
         this.intake = intake;
         this.motorState = motorState;
         this.duration = duration;

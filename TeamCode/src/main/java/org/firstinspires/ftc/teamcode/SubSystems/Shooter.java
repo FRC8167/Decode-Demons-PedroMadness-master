@@ -11,7 +11,7 @@ import com.seattlesolvers.solverslib.util.InterpLUT;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Configurable
-public class ShooterSubsystem extends SubsystemBase {
+public class Shooter extends SubsystemBase {
         private final Robot robot = Robot.getInstance();
 
     public MotorEx shooterMotor;
@@ -56,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
 
 
-        public ShooterSubsystem(MotorEx motor) {
+        public Shooter(MotorEx motor) {
             shooterMotor = motor;
             shooterMotor.setRunMode(Motor.RunMode.VelocityControl);
             shooterMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
