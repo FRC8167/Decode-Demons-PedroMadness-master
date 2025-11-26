@@ -9,28 +9,35 @@ public class FeederCommand extends CommandBase {
 
     private final Feeder feeder;
     private final Feeder.ServoState servoState;
+    private final ElapsedTime timer = new ElapsedTime();
+    private final double duration;
 
-    ElapsedTime timer;
 
 
 
-    public FeederCommand(Feeder.ServoState servoState, Feeder feeder) {
+
+    public FeederCommand(Feeder.ServoState servoState, Feeder feeder, double duration) {
         this.feeder = feeder;
         this.servoState = servoState;
+        this.duration = duration;
         addRequirements(feeder);
     }
 
     @Override
     public void initialize() {
-        timer = new ElapsedTime();
+        timer.reset();
+        feeder.feed(servoState);
+    }
+
+    @Override
+    public void execute() {
         feeder.feed(servoState);
     }
 
 
-
     @Override
     public boolean isFinished() {
-        return timer.milliseconds() >= 1000;
+        return duration > 0 && timer.milliseconds() > duration;
     }
 
     @Override

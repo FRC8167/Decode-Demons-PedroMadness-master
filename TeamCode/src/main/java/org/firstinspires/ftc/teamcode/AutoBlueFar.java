@@ -69,38 +69,42 @@ public class AutoBlueFar extends CommandOpMode {
 
         schedule(
                 new SequentialCommandGroup(
-                        //shoot pre-loaded artifact
+                        //shoot two pre-loaded artifacts
                         new ShooterSpinUpCommand(robot.shooter, 4800),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF ),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
+                        new ParallelCommandGroup(
+                            new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 500),
+                            new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 500)
+                        ),
                         new ShooterSpinUpCommand(robot.shooter, 4800),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
-
+                        new ParallelCommandGroup(
+                                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 500),
+                                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 500)
+                        ),
                         new ParallelCommandGroup(
                                 new ShooterSpinUpCommand(robot.shooter, 0.0),
-//                                new FeederCommand(Feeder.ServoState.STOP, robot.feederR),
-
                                 new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
                         ),
 
-                        //gobble one or two artifacts?
+                        //gobble two artifacts
                         new ParallelCommandGroup(
-                            new SetIntakeCommand(robot.intake, Intake.MotorState.FORWARD, 500),
+                            new SetIntakeCommand(robot.intake, Intake.MotorState.FORWARD, 2000),
                             new FollowPathCommand(robot.follower, path2, false)
                             ),
 
                         //drive to shooting position, shoot
                         new ParallelCommandGroup(
-                            new ShooterSpinUpCommand(robot.shooter, 4800.0),
                             new FollowPathCommand(robot.follower, path3, false),
-                                new SetIntakeCommand(robot.intake, Intake.MotorState.STOP,100)
+                            new SetIntakeCommand(robot.intake, Intake.MotorState.STOP,100)
                         ),
-                        new SetIntakeCommand(robot.intake, Intake.MotorState.FORWARD,500),
+                        new ShooterSpinUpCommand(robot.shooter, 4800.0),
                         new ParallelCommandGroup(
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR ),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF )
-
+                            new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 500),
+                            new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 500)
+                        ),
+                        new ShooterSpinUpCommand(robot.shooter, 4800),
+                        new ParallelCommandGroup(
+                                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 500),
+                                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 500)
                         ),
 
         new ShooterSpinUpCommand(robot.shooter, 0.0)
@@ -115,16 +119,12 @@ public class AutoBlueFar extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-
-
         robot.follower.update();
         robot.follower.getPose();
         telemetry.addData("timer", timer.milliseconds()/1000);
         telemetry.addData("X:  ", robot.follower.getPose().getX());
         telemetry.addData("Y:  ", robot.follower.getPose().getY());
         telemetry.addData("Theta:  ", robot.follower.getPose().getHeading());
-//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.g
-
         telemetry.update();
     }
 

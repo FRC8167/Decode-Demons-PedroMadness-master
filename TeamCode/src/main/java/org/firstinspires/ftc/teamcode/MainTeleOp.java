@@ -84,12 +84,12 @@ public class MainTeleOp extends CommandOpMode {
                .whenPressed(new ToggleIntakeCommand(robot.intake, Intake.MotorState.REVERSE));
 
        operator.getGamepadButton(GamepadKeys.Button.X)
-            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF))
-            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederF));
+            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 0))
+            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederF, 0));
 
         operator.getGamepadButton(GamepadKeys.Button.Y)
-            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR))
-            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederR));
+            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 0))
+            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederR, 0));
 
 
         driver.getGamepadButton(GamepadKeys.Button.A)
@@ -101,13 +101,13 @@ public class MainTeleOp extends CommandOpMode {
 //                    new DriveToPoseCommand(shootingPose, driver),
                     new ShooterSpinUpCommand(robot.shooter, 3000.0)
                 ),
-                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF),
+                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF, 500),
                 new ShooterSpinUpCommand(robot.shooter, 3000.0),
-                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
+                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR, 500),
                 new ParallelCommandGroup(
-                        new FeederCommand(Feeder.ServoState.STOP, robot.feederF),
+                        new FeederCommand(Feeder.ServoState.STOP, robot.feederF, 500),
                         new ShooterSpinUpCommand(robot.shooter, 0.0),
-                        new FeederCommand(Feeder.ServoState.STOP, robot.feederR)
+                        new FeederCommand(Feeder.ServoState.STOP, robot.feederR, 500)
                 )
 
             )
