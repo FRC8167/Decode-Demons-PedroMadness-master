@@ -24,7 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
         public static double kp = 0.002;
         public static double ki = 0.02;
         public static double kd = 0.00003;
-        public static double tolerance= 100.0;  //RPMs
+        public static double tolerance= 200.0;  //RPMs
 
     public double RPM1;
     public double RPM2;
@@ -73,7 +73,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
         public void stop() {
             targetRPM = 0;
-//            shooterMotor.set(0);
         }
 
         @Override
@@ -83,9 +82,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
             double currentVelocity = shooterMotor.getVelocity();
             double output = shooterPID.calculate(currentVelocity, ticksPerSec);
-
-            //if setpoint is built in, could this possibly be just:
-//            double output = shooterPID.calculate(currentVelocity);
 
             shooterMotor.set(output);
         }
@@ -115,7 +111,6 @@ public class ShooterSubsystem extends SubsystemBase {
             double targetRPM = distanceToRPM.get(ATdistance);
             ticksPerSec = convertRPMToTicksPerSec(targetRPM);
             shooterPID.setSetPoint(ticksPerSec);
-//            setVelocity(targetRPM);
         }
 
 

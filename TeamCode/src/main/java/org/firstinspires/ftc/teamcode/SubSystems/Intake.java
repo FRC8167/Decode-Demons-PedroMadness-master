@@ -7,7 +7,6 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends SubsystemBase{
-//    private final Robot robot = Robot.getInstance();
     private final MotorEx intakeMotor;
 
 
@@ -15,7 +14,6 @@ public class Intake extends SubsystemBase{
         intakeMotor = motor;
         intakeMotor.setRunMode(Motor.RunMode.RawPower);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-
     }
 
     public enum MotorState {
@@ -36,6 +34,7 @@ public class Intake extends SubsystemBase{
 
     public void setMotorState(MotorState motorState) {
         this.motorState = motorState;
+        setIntakeState();
     }
 
     public void setIntakeState() {
@@ -57,32 +56,15 @@ public class Intake extends SubsystemBase{
         }
 
 
-    public void toggleForward() {
-            if (motorState.equals(MotorState.FORWARD)) {
+    public void toggle(MotorState state) {
+            if (motorState == state) {
                 setMotorState(MotorState.STOP);
             } else {
-                setMotorState(MotorState.FORWARD);
+                setMotorState(state);
             }
-            setIntakeState();
         }
-
-    /** Toggle between REVERSE and STOP */
-    public void toggleReverse() {
-        if (motorState == MotorState.REVERSE) {
-            setMotorState(MotorState.STOP);
-        } else {
-            setMotorState(MotorState.REVERSE);
-        }
-        setIntakeState();
     }
 
-    @Override
-    public void periodic() {
-        setIntakeState();
-
-
-    }
-}
 
 
 

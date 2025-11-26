@@ -26,7 +26,7 @@ public class AutoBlueFar extends CommandOpMode {
     private final Pose startPose = new Pose(56, 8, Math.toRadians(-80));
     private final Pose artifactsGPPPose = new Pose(56, 36, Math.toRadians(180));
     private final Pose collectGPPPose = new Pose(20, 36, Math.toRadians(180));
-    private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-70));
+    private final Pose shootFarPose = new Pose(56, 8, Math.toRadians(-50));
 
 
     private PathChain path1, path2, path3;
@@ -70,32 +70,40 @@ public class AutoBlueFar extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         //shoot pre-loaded artifact
-                        new ShooterSpinUpCommand(robot.shooterSubsystem, 5800),
+                        new ShooterSpinUpCommand(robot.shooter, 4800),
                         new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF ),
-                        new ShooterSpinUpCommand(robot.shooterSubsystem, 5800),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
+                        new ShooterSpinUpCommand(robot.shooter, 4800),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF),
                         new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
 
                         new ParallelCommandGroup(
-                                new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0),
-                                new FeederCommand(Feeder.ServoState.STOP, robot.feederR),
+                                new ShooterSpinUpCommand(robot.shooter, 0.0),
+//                                new FeederCommand(Feeder.ServoState.STOP, robot.feederR),
 
                                 new FollowPathCommand(robot.follower, path1, false)  //GPP spike mark
                         ),
 
                         //gobble one or two artifacts?
                         new ParallelCommandGroup(
-                            new SetIntake(robot.intake, Intake.MotorState.FORWARD),
+                            new SetIntake(robot.intake, Intake.MotorState.FORWARD, 500),
                             new FollowPathCommand(robot.follower, path2, false)
                             ),
 
                         //drive to shooting position, shoot
                         new ParallelCommandGroup(
-                            new ShooterSpinUpCommand(robot.shooterSubsystem, 6000.0),
+                            new ShooterSpinUpCommand(robot.shooter, 4800.0),
                             new FollowPathCommand(robot.follower, path3, false),
-                                new SetIntake(robot.intake, Intake.MotorState.STOP)
+                                new SetIntake(robot.intake, Intake.MotorState.STOP,100)
                         ),
-                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF ),
-                        new ShooterSpinUpCommand(robot.shooterSubsystem, 0.0)
+                        new SetIntake(robot.intake, Intake.MotorState.FORWARD,500),
+                        new ParallelCommandGroup(
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR ),
+                        new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF )
+
+                        ),
+
+        new ShooterSpinUpCommand(robot.shooter, 0.0)
                 )
         );
 

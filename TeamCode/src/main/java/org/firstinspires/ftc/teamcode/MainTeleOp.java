@@ -1,30 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.button.Button;
-import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
-
-import com.bylazar.telemetry.TelemetryManager;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.Commands.DriveToPoseCommand;
 import org.firstinspires.ftc.teamcode.Commands.FeederCommand;
-
 import org.firstinspires.ftc.teamcode.Commands.ShooterSpinUpCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleForwardCommand;
-import org.firstinspires.ftc.teamcode.Commands.ToggleReverseCommand;
+import org.firstinspires.ftc.teamcode.Commands.ToggleIntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.VisionCommand;
-
 import org.firstinspires.ftc.teamcode.SubSystems.Feeder;
+import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -59,77 +53,70 @@ public class MainTeleOp extends CommandOpMode {
         }
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-        double targetVelocity = 6000; //rpm
-//        double targetRPM = 6000; //rpm
 
+        //end pose held in robot
+        //if auto ran, last pose is used or else default of 24,24,0
+        Pose startPose = robot.autoEndPose != null ? robot.autoEndPose : new Pose(24, 24, 0);
         robot.follower.setStartingPose(startPose);
         robot.follower.update();
-
+        //only schedule perpetually running commands
         schedule(new DriveCommand(robot.mecanumDrive, gamepad1));
         schedule(new VisionCommand(robot.vision));
 
         driver   = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 
-        double leftTrigger = driver.gamepad.left_trigger;   // range 0.0 to 1.0
-        double rightTrigger = driver.gamepad.right_trigger; // range 0.0 to 1.0
 
-        //Intake Button Bindings
-        Button intakeToggleForward = new GamepadButton(operator, GamepadKeys.Button.A);
-        intakeToggleForward.whenPressed(new ToggleForwardCommand(robot.intake));
 
-        Button intakeToggleReverse = new GamepadButton(operator, GamepadKeys.Button.B);
-        intakeToggleReverse.whenPressed(new ToggleReverseCommand(robot.intake));
+        //******OPERATOR CONTROLS*****
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+            .whileHeld(new ShooterSpinUpCommand(robot.shooter, 4800.0))
+            .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
 
-        Button feederFfwd = new GamepadButton(operator, GamepadKeys.Button.X);
-            feederFfwd.whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF));
-            feederFfwd.whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederF));
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whileHeld (new ShooterSpinUpCommand(robot.shooter, 4000.0))
+                .whenReleased(new ShooterSpinUpCommand(robot.shooter, 0));
 
-        Button feederRfwd = new GamepadButton(operator, GamepadKeys.Button.Y);
-             feederRfwd.whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR));
-            feederRfwd.whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederR));
+        operator.getGamepadButton(GamepadKeys.Button.A)
+            .whenPressed(new ToggleIntakeCommand(robot.intake, Intake.MotorState.FORWARD));
 
-        Button shoot = new GamepadButton(operator, GamepadKeys.Button.LEFT_BUMPER);
-            shoot.whileHeld(new ShooterSpinUpCommand(robot.shooter, 4800.0));
-            shoot.whenReleased(new ShooterSpinUpCommand(robot.shooter, 0.0));
+       operator.getGamepadButton(GamepadKeys.Button.B)
+               .whenPressed(new ToggleIntakeCommand(robot.intake, Intake.MotorState.REVERSE));
 
-//        Shooter Button Bindings
-//        Button shooterToggle = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
-//        shooterToggle.whenPressed(new ToggleShooterCommand(robot.shooter));
+       operator.getGamepadButton(GamepadKeys.Button.X)
+            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF))
+            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederF));
 
-//        Button driveToShootPose = new GamepadButton(driver, GamepadKeys.Button.A);
-//        driveToShootPose.whenPressed(new DriveToPoseCommand(shootingPose, driver));
+        operator.getGamepadButton(GamepadKeys.Button.Y)
+            .whileHeld(new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR))
+            .whenReleased(new FeederCommand(Feeder.ServoState.STOP, robot.feederR));
 
-//        Button shootSequenceButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
-//        shootSequenceButton.whenPressed(new SequentialCommandGroup(
-//                new ParallelCommandGroup(
+
+        driver.getGamepadButton(GamepadKeys.Button.A)
+            .whenPressed(new DriveToPoseCommand(shootingPose, driver));
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+            .whenPressed(new SequentialCommandGroup(
+                new ParallelCommandGroup(
 //                    new DriveToPoseCommand(shootingPose, driver),
-//                        new ShooterSpinUpCommand(robot.shooter, 6000.0)
+                    new ShooterSpinUpCommand(robot.shooter, 3000.0)
+                ),
+                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF),
+                new ShooterSpinUpCommand(robot.shooter, 3000.0),
+                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederR),
+                new ParallelCommandGroup(
+                        new FeederCommand(Feeder.ServoState.STOP, robot.feederF),
+                        new ShooterSpinUpCommand(robot.shooter, 0.0),
+                        new FeederCommand(Feeder.ServoState.STOP, robot.feederR)
+                )
 
-//                    new ShooterSpinupCommand(robot.shooter, targetVelocity)
-//                ),
-//                new FeederCommand(Feeder.ServoState.FORWARD, robot.feederF)
-//            )
-//        );
+            )
+        );
 
 
-//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenHeld (new ShooterSpinupCommand(robot.shooter, 6000.0))
-//                .whenReleased(new ShooterSpinupCommand(robot.shooter, 0));
 
-//        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenHeld(new InstantCommand(() -> robot.shooter.turnOn()))
-//                .whenReleased(new InstantCommand(() -> robot.shooter.turnOff()));
 
-        /* Engage Drive Snail Mode */
-//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//                .whenPressed (new InstantCommand(robot.mecanumDrive::enableSnailDrive))
-//                .whenReleased(new InstantCommand(robot.mecanumDrive::disableSnailDrive));
 
-        /* Drive Field Centric (Need to add command DriveFieldCentric) */
-        /*driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed (new DriveFieldCentric(robot.mecanumDrive, gamepad1, robot.follower.getHeading());
-         */
 
     }
 
@@ -139,10 +126,6 @@ public class MainTeleOp extends CommandOpMode {
         robot.follower.update();
         autoEndPose = robot.follower.getPose();
         AprilTagDetection tag = robot.vision.getFirstTargetTag();
-
-
-
-        //reverse feeder
 
 
         if (tag != null) {
@@ -162,7 +145,8 @@ public class MainTeleOp extends CommandOpMode {
         telemetry.addData("Distance to Goal", robot.vision.getDistanceToGoal());
 
 //        telemetry.addData("Shooter Power", robot.shooter.getPower());
-//        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getVelocity());
+        telemetry.addData("Shooter Velocity (RPM)", robot.shooter.getRPM());
+        telemetry.addData("Shooter Ready?", robot.shooter.atTargetVelocity());
 
 //        telemetry.addData("Shooter Target Velocity (RPM)", targetVelocity);
         telemetryM.addData("Shooter Ready?", robot.shooter.atTargetVelocity());

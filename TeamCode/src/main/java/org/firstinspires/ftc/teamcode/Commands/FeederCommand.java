@@ -30,7 +30,7 @@ public class FeederCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.milliseconds() >= 3000;
+        return timer.milliseconds() >= 1000;
     }
 
     @Override

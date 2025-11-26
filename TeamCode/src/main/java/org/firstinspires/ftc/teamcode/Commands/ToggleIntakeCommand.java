@@ -3,18 +3,21 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.SubSystems.Intake;
 
-public class ToggleForwardCommand extends CommandBase {
+public class ToggleIntakeCommand extends CommandBase {
 
     private final Intake intake;
+    private final Intake.MotorState toggleState;
 
-    public ToggleForwardCommand(Intake intake) {
+
+    public ToggleIntakeCommand(Intake intake, Intake.MotorState toggleState) {
         this.intake = intake;
+        this.toggleState = toggleState;
         addRequirements(intake);
     }
 
     @Override
     public void initialize() {
-        intake.toggleForward();
+        intake.toggle(toggleState);
     }
 
     @Override
